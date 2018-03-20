@@ -1,2 +1,2 @@
 # rotcider
-An API facilitating provable, secret predictions about prices of various securities in financial markets.
+A JSON-RPC API implementing a traditional style of adventure game.
