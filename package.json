@@ -1,5 +1,8 @@
 {
   "name": "rotcider",
+  "engines": {
+    "node" : ">=8"
+  },
   "version": "0.0.1-pre",
   "description": "An Adventure game, silly.",
   "main": "src/index.js",

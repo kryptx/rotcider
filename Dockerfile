@@ -8,3 +8,7 @@ COPY . /app/
 
 FROM copy AS test
 RUN npm test
+
+FROM copy
+EXPOSE 3000
+CMD node .
