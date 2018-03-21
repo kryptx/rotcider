@@ -12,29 +12,30 @@ const schema = {
 }
 
 module.exports = {
-  validate: (req, res, next) => {
-    // sanitize request
-    const result = Joi.validate(req.body, schema);
-    if(result.error) return next(result.error);
-    Object.assign(res.locals, result.value);
+  validate: deps => {
+    const joiError = deps.ErrorFunnel.joi;
+    return (req, res, next) => {
+      // sanitize request
+      const result = Joi.validate(req.body, schema, { abortEarly: false });
+      if(result.error) return next(joiError(result.error));
 
-    // validate params using complete schema, for complete error message
-    const complete_schema = {
-      jsonrpc: schema.jsonrpc,
-      method: schema.method,
-      params: methods[res.locals.method].schema,
-      id: Joi.any()
+      Object.assign(res.locals, result.value);
+
+      // validate params using complete schema, now that we know we have a valid method
+      const complete_schema = Object.assign({}, schema, { params: methods[res.locals.method].schema })
+      const params_result = Joi.validate(req.body, complete_schema, { abortEarly: false });
+      if(params_result.error) return next(joiError(params_result.error));
+      // all done!
+      return next();
     }
-    const params_result = Joi.validate(req.body, complete_schema);
-    if(params_result.error) return next(params_result.error);
-    // all done!
-    return next();
   },
-  handle: state => async (req, res, next) => {
-    const result;
+  handle: deps => async (req, res, next) => {
+    let result;
     try {
-      result = await methods[res.locals.method].handle(res.locals.params, state);
-    } catch (e) { return next(e); }
+      result = await methods[res.locals.method].handle(res.locals.params, deps);
+    } catch (e) {
+      return next(e);
+    }
 
     res.json({
       jsonrpc: '2.0',
@@ -43,7 +44,7 @@ module.exports = {
       id: res.locals.id
     });
   },
-  handleError = (error, req, res, next) => {
+  handleError: (error, req, res, next) => {
     res.json({
       jsonrpc: '2.0',
       result: null,

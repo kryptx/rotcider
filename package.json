@@ -1,7 +1,7 @@
 {
   "name": "rotcider",
   "version": "0.0.1-pre",
-  "description": "An express REST API for making provable secret predictions about the prices of securities in financial markets.\"",
+  "description": "An Adventure game, silly.",
   "main": "src/index.js",
   "scripts": {
     "test": ""
@@ -11,8 +11,9 @@
     "url": "git+https://github.com/kryptx/rotcider.git"
   },
   "keywords": [
-    "prediction",
-    "restful",
+    "json-rpc",
+    "adventure",
+    "game",
     "express"
   ],
   "author": "Jason Burbage <kryptx@gmail.com>",
@@ -22,8 +23,11 @@
   },
   "homepage": "https://github.com/kryptx/rotcider#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "common-errors": "^1.0.5",
     "express": "^4.16.2",
-    "joi": "^13.0.2"
+    "joi": "^13.0.2",
+    "yarn": "^1.5.1"
   },
   "devDependencies": {
     "chai": "^4.1.2",

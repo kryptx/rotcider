@@ -14,6 +14,13 @@
         "--recursive",
         "src"
       ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch",
+      "program": "${workspaceFolder}/src/index.js",
+      "cwd": "${workspaceFolder}"
     }
   ]
 }
