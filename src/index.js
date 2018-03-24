@@ -9,7 +9,6 @@ const deps = require('./app_modules');
 
 app.post('/json-rpc', [
   BodyParser.json(),
-  JsonRPC.validate(deps),
   JsonRPC.handle(deps),
   JsonRPC.handleError
 ]);

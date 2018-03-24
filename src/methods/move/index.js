@@ -11,5 +11,5 @@ module.exports = {
       'back','backward','forward'
     ]).required()
   }).required(),
-  handle: async (args, state) => ({ moved: args.direction })
+  handle: async (args, deps, state) => ({ moved: args.direction })
 };

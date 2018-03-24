@@ -1,10 +1,9 @@
 FROM node:8-alpine AS base
-COPY package.json yarn.lock /app/
-WORKDIR /app
+COPY package.json yarn.lock /
 RUN yarn
 
 FROM base AS copy
-COPY . /app/
+COPY . /
 
 FROM copy AS test
 RUN npm test

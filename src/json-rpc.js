@@ -11,32 +11,34 @@ const schema = {
   id: Joi.any()
 }
 
-module.exports = {
-  validate: deps => {
+exports = module.exports = {
+  invoke: async (body, deps, state) => {
+    let validated_body = exports.validate(body, deps);
+    return await methods[body.method].handle(body.params, deps, state);
+  },
+  validate: (body, deps) => {
+    // state is not provided because we are not validating what the character can do
+    // we are validating, the format, syntax, and contents of the request body itself
     const joiError = deps.ErrorFunnel.joi;
-    return (req, res, next) => {
-      // sanitize request
-      const result = Joi.validate(req.body, schema, { abortEarly: false });
-      if(result.error) return next(joiError(result.error));
+    const result = Joi.validate(body, schema, { abortEarly: false });
+    if(result.error) throw joiError(result.error);
 
-      Object.assign(res.locals, result.value);
+    // validate params using complete schema, now that we know we have a valid method
+    const complete_schema = Object.assign({}, schema, { params: methods[body.method].schema })
+    const params_result = Joi.validate(body, complete_schema, { abortEarly: false });
+    if(params_result.error) throw joiError(params_result.error);
 
-      // validate params using complete schema, now that we know we have a valid method
-      const complete_schema = Object.assign({}, schema, { params: methods[res.locals.method].schema })
-      const params_result = Joi.validate(req.body, complete_schema, { abortEarly: false });
-      if(params_result.error) return next(joiError(params_result.error));
-      // all done!
-      return next();
-    }
+    return params_result.value;
   },
   handle: deps => async (req, res, next) => {
     let result;
+    let state = exports.readState(req);
     try {
-      result = await methods[res.locals.method].handle(res.locals.params, deps);
+      result = await exports.invoke(req.body, deps, state);
     } catch (e) {
       return next(e);
     }
-
+    exports.writeState(res, state);
     res.json({
       jsonrpc: '2.0',
       result,
@@ -51,5 +53,12 @@ module.exports = {
       error,
       id: res.locals.id
     });
+  },
+  readState: req => {
+    return "some values from an encrypted cookie or local storage";
+  },
+  writeState: (res, state) => {
+    // save state somewhere
+    return;
   }
 }
