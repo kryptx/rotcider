@@ -4,61 +4,69 @@
 const Joi = require('joi');
 const methods = require('./methods');
 
+const PARSE_ERROR = -32700 // Invalid JSON was received by the server.
+const INVALID_REQUEST = -32600; // The JSON sent is not a valid Request object.
+const METHOD_NOT_FOUND = -32601; // The method does not exist / is not available.
+const INVALID_PARAMS = -32602; // Invalid method parameter(s).
+const INTERNAL_ERROR = -32603; // Internal JSON-RPC error.
+
 const schema = {
   jsonrpc: Joi.string().only('2.0').required(),
-  method: Joi.string().only(Object.keys(methods)).required(),
-  params: Joi.object(),
-  id: Joi.any()
-}
+  method: Joi.string().required(),
+  params: Joi.any(),
+  id: [Joi.number(), Joi.string().allow(null)]
+};
 
 exports = module.exports = {
-  invoke: async (body, deps, state) => {
-    let validated_body = exports.validate(body, deps);
-    return await methods[body.method].handle(body.params, deps, state);
-  },
-  validate: (body, deps) => {
-    // state is not provided because we are not validating what the character can do
-    // we are validating, the format, syntax, and contents of the request body itself
-    const joiError = deps.ErrorFunnel.joi;
-    const result = Joi.validate(body, schema, { abortEarly: false });
-    if(result.error) throw joiError(result.error);
-
-    // validate params using complete schema, now that we know we have a valid method
-    const complete_schema = Object.assign({}, schema, { params: methods[body.method].schema })
-    const params_result = Joi.validate(body, complete_schema, { abortEarly: false });
-    if(params_result.error) throw joiError(params_result.error);
-
-    return params_result.value;
-  },
   handle: deps => async (req, res, next) => {
     let result;
-    let state = exports.readState(req);
     try {
-      result = await exports.invoke(req.body, deps, state);
-    } catch (e) {
-      return next(e);
+      res.locals.id = req.body.id;
+      result = await exports.invoke(req.body, deps, res.locals.state);
     }
-    exports.writeState(res, state);
-    res.json({
-      jsonrpc: '2.0',
-      result,
-      error: null,
-      id: res.locals.id
-    });
+    catch (e) { return next(e); }
+
+    res.json({ jsonrpc: '2.0', result, error: null, id: res.locals.id });
+    return next();
   },
+
+  invoke: async (body, deps, state) => {
+    let safe_body = exports.validate(body, deps);
+    let rpc_method = methods[safe_body.method].handle;
+    return await rpc_method(safe_body.params, deps, state);
+  },
+
+  validate: (body, { ErrorFunnel }) => {
+    const joiError = ErrorFunnel.joi;
+    const result = Joi.validate(body, schema);
+    if(result.error) throw joiError(result.error, INVALID_REQUEST);
+
+    // this could be part of the Joi schema,
+    // but then it'd be hard to separate the error type
+    if(!Object.keys(methods).includes(result.value.method)) {
+      throw {
+        code: METHOD_NOT_FOUND,
+        message: `Method not found: ${result.value.method}`
+      }
+    }
+
+    const params_result = Joi.validate(body.params, methods[body.method].schema, { abortEarly: false });
+    if(params_result.error) throw joiError(params_result.error, INVALID_PARAMS);
+    return result.value;
+  },
+
   handleError: (error, req, res, next) => {
-    res.json({
-      jsonrpc: '2.0',
-      result: null,
-      error,
-      id: res.locals.id
-    });
+    res.status(500).json({ jsonrpc: '2.0', result: null, error, id: res.locals.id });
+    return next();
   },
-  readState: req => {
-    return "some values from an encrypted cookie or local storage";
+
+  readState: (req, res, next) => {
+    res.locals.state = "some values from an encrypted cookie or local storage";
+    return next();
   },
-  writeState: (res, state) => {
-    // save state somewhere
-    return;
+
+  writeState: (req, res, next) => {
+    // save res.locals.state somewhere
+    return next();
   }
 }

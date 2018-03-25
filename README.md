@@ -12,3 +12,8 @@ The API meets the JSON-RPC 2.0 Specification. It currently does _nothing of valu
 
 ## How do I play?
 You don't, until I decide to implement this somehow.
+
+### Methods
+
+### `ping`
+### `move`
