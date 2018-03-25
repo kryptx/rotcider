@@ -9,7 +9,9 @@ const deps = require('./app_modules');
 
 app.post('/json-rpc', [
   BodyParser.json(),
+  JsonRPC.readState,
   JsonRPC.handle(deps),
+  JsonRPC.writeState,
   JsonRPC.handleError
 ]);
 

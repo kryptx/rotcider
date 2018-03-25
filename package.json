@@ -7,7 +7,7 @@
   "description": "An Adventure game, silly.",
   "main": "src/index.js",
   "scripts": {
-    "test": "node_modules/mocha/bin/_mocha --recursive src/**/test.js"
+    "test": "node_modules/mocha/bin/_mocha --recursive src/**/test.js --exit"
   },
   "repository": {
     "type": "git",

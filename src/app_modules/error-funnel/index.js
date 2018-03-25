@@ -1,7 +1,5 @@
 'use strict';
 
-const Errors = require('common-errors');
-
 module.exports = {
   joi: (joiError, code) => ({
     code,
