@@ -8,7 +8,7 @@ const endec = async orig => {
   let encoded = await StateMarshal.encode(orig);
   let decoded = await StateMarshal.decode(encoded);
   Assert.deepEqual(decoded, orig);
-}
+};
 
 describe('State Marshal', () => {
   it('should encode and decode a simple object', async () => {
@@ -21,7 +21,7 @@ describe('State Marshal', () => {
 
   it('should handle arrays as properties', async () => {
     return endec({ someValue: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] });
-  })
+  });
 
   it('should handle mixed arrays', async () => {
     return endec({
@@ -36,6 +36,6 @@ describe('State Marshal', () => {
   });
 
   it('should handle nested arrays', async () => {
-    return endec([ 1, 2, 3, [ 0, 1, 1, 0 ], [ 2, 0, [ 3, 5 ]]])
-  })
+    return endec([ 1, 2, 3, [ 0, 1, 1, 0 ], [ 2, 0, [ 3, 5 ]]]);
+  });
 });
