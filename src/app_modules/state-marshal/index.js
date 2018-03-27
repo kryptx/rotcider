@@ -2,11 +2,11 @@
 
 const Base64url = require('base64url');
 const Zlib = require('zlib');
-const Util = require('util');
+const Promisify = require('util').promisify;
 const EncodingVersion = 0;
 
-const zip = Util.promisify(Zlib.deflate);
-const unzip = Util.promisify(Zlib.unzip);
+const zip = Promisify(Zlib.deflate);
+const unzip = Promisify(Zlib.unzip);
 const prependVersion = str => EncodingVersion + '/' + str;
 
 exports = module.exports = {

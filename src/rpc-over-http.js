@@ -29,7 +29,7 @@ exports = module.exports = {
   },
 
   handleError: (error, req, res, next) => {
-    res.json({ jsonrpc: '2.0', result: null, error, id: res.locals.id });
+    res.status(500).json({ jsonrpc: '2.0', result: null, error, id: res.locals.id });
     return next();
   }
 
