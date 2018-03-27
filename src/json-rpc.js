@@ -19,19 +19,24 @@ const schema = {
 
 exports = module.exports = {
   handle: deps => async (req, res, next) => {
-    let result;
-    res.locals.id = req.body.id;
-    try {
-      res.locals.result = await exports.invoke(req.body, deps, res.locals.state);
-    }
-    catch (e) { return next(e); }
+    res.locals.response = await exports.invoke(req.body, deps, res.locals.state);
     return next();
   },
 
   invoke: async (body, deps, state) => {
-    let safe_body = exports.validate(body, deps);
-    let rpc_method = methods[safe_body.method].handle;
-    return await rpc_method(safe_body.params, deps, state);
+    let result = null, error = null;
+    try {
+      let safe_body = exports.validate(body, deps);
+      let rpc_method = methods[safe_body.method].handle;
+      result = await rpc_method(safe_body.params, deps, state);
+    }
+    catch (e) { error = e; }
+    return {
+      jsonrpc: '2.0',
+      result,
+      error,
+      id: body.id
+    }
   },
 
   validate: (body, { ErrorFunnel }) => {

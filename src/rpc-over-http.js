@@ -23,13 +23,13 @@ exports = module.exports = {
     return next();
   },
 
-  handleSuccess: (req, res, next) => {
-    res.json({ jsonrpc: '2.0', result: res.locals.result, error: null, id: res.locals.id });
+  respond: (req, res, next) => {
+    res.status(res.locals.response.error ? 500 : 200).json(res.locals.response);
     return next();
   },
 
   handleError: (error, req, res, next) => {
-    res.status(500).json({ jsonrpc: '2.0', result: null, error, id: res.locals.id });
+    res.json({ jsonrpc: '2.0', result: null, error: { code: -32000, message: 'Unexpected error.', data: error.stack }, id: res.locals.id });
     return next();
   }
 

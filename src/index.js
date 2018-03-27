@@ -15,7 +15,7 @@ app.post('/json-rpc', [
   RpcOverHTTP.readState(deps),
   JsonRPC.handle(deps),
   RpcOverHTTP.writeState(deps),
-  RpcOverHTTP.handleSuccess,
+  RpcOverHTTP.respond,
   RpcOverHTTP.handleError,
 ]);
 
