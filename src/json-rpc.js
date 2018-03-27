@@ -22,11 +22,9 @@ exports = module.exports = {
     let result;
     res.locals.id = req.body.id;
     try {
-      result = await exports.invoke(req.body, deps, res.locals.state);
+      res.locals.result = await exports.invoke(req.body, deps, res.locals.state);
     }
     catch (e) { return next(e); }
-
-    res.json({ jsonrpc: '2.0', result, error: null, id: res.locals.id });
     return next();
   },
 
@@ -53,20 +51,5 @@ exports = module.exports = {
     const params_result = Joi.validate(body.params, methods[body.method].schema.label('params'), { abortEarly: false });
     if(params_result.error) throw joiError(params_result.error, INVALID_PARAMS);
     return result.value;
-  },
-
-  handleError: (error, req, res, next) => {
-    res.status(500).json({ jsonrpc: '2.0', result: null, error, id: res.locals.id });
-    return next();
-  },
-
-  readState: (req, res, next) => {
-    res.locals.state = "some values from an encrypted cookie or local storage";
-    return next();
-  },
-
-  writeState: (req, res, next) => {
-    // save res.locals.state somewhere
-    return next();
   }
 }
