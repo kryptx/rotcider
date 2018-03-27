@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/kryptx/rotcider#readme",
   "dependencies": {
+    "base64url": "^2.0.0",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "joi": "^13.0.2"

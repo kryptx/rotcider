@@ -20,8 +20,8 @@ const schema = {
 exports = module.exports = {
   handle: deps => async (req, res, next) => {
     let result;
+    res.locals.id = req.body.id;
     try {
-      res.locals.id = req.body.id;
       result = await exports.invoke(req.body, deps, res.locals.state);
     }
     catch (e) { return next(e); }
@@ -42,7 +42,7 @@ exports = module.exports = {
     if(result.error) throw joiError(result.error, INVALID_REQUEST);
 
     // this could be part of the Joi schema,
-    // but then it'd be hard to separate the error type
+    // but then it'd be hard to separate METHOD_NOT_FOUND errors
     if(!Object.keys(methods).includes(result.value.method)) {
       throw {
         code: METHOD_NOT_FOUND,
@@ -50,7 +50,7 @@ exports = module.exports = {
       }
     }
 
-    const params_result = Joi.validate(body.params, methods[body.method].schema, { abortEarly: false });
+    const params_result = Joi.validate(body.params, methods[body.method].schema.label('params'), { abortEarly: false });
     if(params_result.error) throw joiError(params_result.error, INVALID_PARAMS);
     return result.value;
   },

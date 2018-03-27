@@ -3,7 +3,7 @@
 module.exports = {
   joi: (joiError, code) => ({
     code,
-    message: joiError.message,
+    message: code == -32600 ? "Invalid request." : "Invalid parameters.",
     data: joiError.details  // assuming abortEarly: false
   })
 };
