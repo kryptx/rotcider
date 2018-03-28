@@ -8,12 +8,42 @@ Since RPC has fallen so far out of favor (thanks to REST), I wanted to imagine w
 
 For that purpose, I'll introduce an entity -- a player character -- to which the user can issue commands. Much like the classic game, Adventure.
 
-The API meets the JSON-RPC 2.0 Specification. It currently does _nothing of value_.
+The API meets the JSON-RPC 2.0 Specification. It is not backwards compatible to any prior version in any way. It currently does _nothing of value_.
+
+## How to run
+There are a few ways. This one's pretty good and only requires docker.
+1. Clone the repo.
+10. Inside the folder, `docker build -t adventure .`
+20. `docker run -d adventure -p 3000:3000`
+
+If you're going to be mucking about in the source anyway, there are also launch configurations present for Visual Studio Code and, of course, you can always just `npm start`.
 
 ## How do I play?
-You don't, until I decide to implement this somehow.
+1. Create a character using the `start` method.
+```
+Content-type: application/json
+POST /json-rpc
+{
+  "jsonrpc": "2.0",
+  "method": "start",
+  "id": "anything-you-want"
+}
+```
+2. Look at the response.
+4. Be amazed. _This step is important. Take your time._
+5. Wait for more to be implemented.
+8. Look at this page later.
 
 ### Methods
 
-### `ping`
-### `move`
+#### `move`
+Move one "unit". One "space", if you imagine your character is on a game board. Not actually implemented, but it'll tell you it worked.
+
+#### `ping`
+Responds with `"pong"`. Unless, of course, you don't provide an id.
+
+#### `reflect`
+Returns your player data.
+
+#### `start`
+Create a character. Create a world. Place the character in the world. Not necessarily in that order. This is for first time users. Not a general character creation API.
