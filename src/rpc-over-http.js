@@ -24,12 +24,22 @@ exports = module.exports = {
   },
 
   respond: (req, res, next) => {
-    res.status(res.locals.response.error ? 500 : 200).json(res.locals.response);
+    if(!res.locals.response) {
+      res.status(204).end();
+    } else {
+      // I have seen the JSON-RPC-over-HTTP spec that suggests
+      // HTTP codes to map to certain JSON-RPC errors
+      // Since they could create ambiguity, and also because
+      // not all implementations will support an out-of-band
+      // error code, I've decided to stick with error/success
+      res.status(res.locals.response.error ? 500 : 200).json(res.locals.response);
+    }
     return next();
   },
 
   handleError: (error, req, res, next) => {
-    res.json({ jsonrpc: '2.0', result: null, error: { code: -32000, message: 'Unexpected error.', data: error.stack }, id: res.locals.id });
+    // most errors won't make it this far. if something outside JSONRPC throws unexpectedly, I still want to send a JSONRPC error
+    res.json({ jsonrpc: '2.0', result: null, error: { code: -32000, message: 'Unexpected error.', data: error.stack }, id: req.body.id });
     return next();
   }
 

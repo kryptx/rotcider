@@ -63,6 +63,18 @@ describe('App', () => {
       Assert.equal(res.body.id, 4242);
     });
   });
+
+  it('should remain silent if no id is given', () => {
+    return post({
+      jsonrpc: '2.0',
+      method: 'ping'
+    })
+    .then(res => {
+      Assert.equal(res.status, 204);
+      Assert.equal(res.text, '');
+    });
+  });
+
   it('should allow batches', () => {
     return post([
       {

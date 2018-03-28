@@ -32,10 +32,12 @@ exports = module.exports = {
         result = await rpc_method(safe_body.params, deps, state);
       }
       catch (e) { error = e; }
-      return { jsonrpc: '2.0', result, error, id: request.id }
-    }
+      return request.id ? { jsonrpc: '2.0', result, error, id: request.id } : null;
+    };
     return Array.isArray(body) ?
-      Promise.all(body.map(await do_request)) : await do_request(body);
+      Promise.all(body.map(do_request))
+        .then(results => results.filter(n => n !== null)) :
+      do_request(body);
   },
 
   validate: (body, { ErrorFunnel }) => {

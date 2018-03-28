@@ -1,4 +1,4 @@
-# rotcider
+# ripcord
 A JSON-RPC API implementing a traditional style of adventure game.
 
 ## What is this?
