@@ -63,4 +63,34 @@ describe('App', () => {
       Assert.equal(res.body.id, 4242);
     });
   });
+  it('should allow batches', () => {
+    return post([
+      {
+        jsonrpc: '2.0',
+        method: 'ping',
+        id: 1234
+      },
+      {
+        jsonrpc: '2.0',
+        method: 'ping',
+        id: 1235
+      },
+      {
+        jsonrpc: '2.0',
+        method: 'ping',
+        id: 1236
+      },
+      {
+        jsonrpc: '2.0',
+        method: 'ping',
+        id: 1237
+      },
+    ])
+    .then(res => {
+      Assert.equal(res.status, 200);
+      Assert.equal(res.body.length, 4);
+      Assert.equal(res.body[3].id, 1237); // note: this is not guaranteed by JSON-RPC
+      Assert.equal(res.body[2].result, 'pong');
+    });
+  });
 });

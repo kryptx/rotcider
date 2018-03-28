@@ -10,12 +10,12 @@ const METHOD_NOT_FOUND = -32601; // The method does not exist / is not available
 const INVALID_PARAMS = -32602; // Invalid method parameter(s).
 const INTERNAL_ERROR = -32603; // Internal JSON-RPC error.
 
-const schema = {
+const schema = Joi.object().keys({
   jsonrpc: Joi.string().only('2.0').required(),
   method: Joi.string().required(),
   params: Joi.any(),
   id: [Joi.number(), Joi.string().allow(null)]
-};
+});
 
 exports = module.exports = {
   handle: deps => async (req, res, next) => {
@@ -24,19 +24,18 @@ exports = module.exports = {
   },
 
   invoke: async (body, deps, state) => {
-    let result = null, error = null;
-    try {
-      let safe_body = exports.validate(body, deps);
-      let rpc_method = methods[safe_body.method].handle;
-      result = await rpc_method(safe_body.params, deps, state);
+    const do_request = async (request) => {
+      let result = null, error = null;
+      try {
+        let safe_body = exports.validate(request, deps);
+        let rpc_method = methods[safe_body.method].handle;
+        result = await rpc_method(safe_body.params, deps, state);
+      }
+      catch (e) { error = e; }
+      return { jsonrpc: '2.0', result, error, id: request.id }
     }
-    catch (e) { error = e; }
-    return {
-      jsonrpc: '2.0',
-      result,
-      error,
-      id: body.id
-    }
+    return Array.isArray(body) ?
+      Promise.all(body.map(await do_request)) : await do_request(body);
   },
 
   validate: (body, { ErrorFunnel }) => {
