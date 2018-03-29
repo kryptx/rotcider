@@ -34,6 +34,7 @@ describe('App', () => {
     .then(res => {
       Assert.equal(res.status, 500);
       Assert.equal(res.body.error.code, INVALID_REQUEST);
+      Assert.equal(res.body.error.message, "Invalid request.");
       Assert.equal(res.body.id, 'anything');
     });
   });
@@ -51,10 +52,23 @@ describe('App', () => {
     });
   });
 
+  it('should return errors for notifications', () => {
+    return post({
+      jsonrpc: '2.0',
+      method: 'doesnotexist'
+    })
+    .then(res => {
+      Assert.equal(res.status, 500);
+      Assert.equal(res.body.error.code, METHOD_NOT_FOUND);
+      Assert.isNull(res.body.id);
+    });
+  });
+
   it('should return pong for ping', () => {
     return post({
       jsonrpc: '2.0',
       method: 'ping',
+      params: 'whatevs',
       id: 4242
     })
     .then(res => {

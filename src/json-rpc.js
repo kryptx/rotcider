@@ -17,12 +17,15 @@ const schema = Joi.object().keys({
   jsonrpc: Joi.string().only('2.0').required(),
   method: Joi.string().required(),
   params: Joi.any(),
-  id: [Joi.number(), Joi.string().allow(null)]
+  id: Joi.alternatives().try(Joi.number(), Joi.string()).allow(null).default(null)
 });
 
 const joiError = (joiError, code) => ({
   code,
-  message: code == -32600 ? "Invalid request." : "Invalid parameters.",
+  message: {
+    [INVALID_REQUEST]: "Invalid request.",
+    [INVALID_PARAMS]: "Invalid parameters."
+  }[code],
   data: joiError.details  // assuming abortEarly: false
 })
 
@@ -42,7 +45,7 @@ exports = module.exports = {
         result = await rpc_method(safe_body.params, deps, state);
       }
       catch (e) { error = e; }
-      return request.id ? { jsonrpc: '2.0', result, error, id: request.id } : null;
+      return (request.id || error) ? { jsonrpc: '2.0', result, error, id: request.id || null } : null;
     };
     return Array.isArray(body) ?
       Promise.all(body.map(do_request))

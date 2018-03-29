@@ -3,6 +3,6 @@
 const Joi = require('joi');
 
 exports = module.exports = {
-  schema: Joi.object().optional(),
+  schema: Joi.any().optional(),
   handle: async (args, deps, state) => "pong"
 };
