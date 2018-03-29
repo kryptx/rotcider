@@ -4,5 +4,5 @@ const Joi = require('joi');
 
 exports = module.exports = {
   schema: Joi.any().optional(),
-  handle: async (args, deps, state) => "pong"
+  handle: async () => 'pong'
 };

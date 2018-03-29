@@ -43,4 +43,4 @@ exports = module.exports = {
     return next();
   }
 
-}
+};

@@ -1,3 +1,4 @@
+/*eslint-env mocha */
 'use strict';
 
 const StateMarshal = require('./index');
@@ -28,7 +29,7 @@ describe('State Marshal', () => {
       someValues: [
         // we cannot use 'undefined'; that is not valid JSON
         // and therefore not allowed in JSON-RPC (a good thing)
-        "staple",
+        'staple',
         { horse: 'battery', five: ['12', 22 ] },
         12, null, true
       ]

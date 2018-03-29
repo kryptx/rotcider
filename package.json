@@ -7,7 +7,8 @@
   "description": "An Adventure game, silly.",
   "main": "src/index.js",
   "scripts": {
-    "test": "node_modules/mocha/bin/_mocha --recursive src/**/test.js --exit"
+    "start": "node src/index.js",
+    "test": "`npm bin`/_mocha --recursive src/**/test.js --exit && `npm bin`/eslint src"
   },
   "repository": {
     "type": "git",
@@ -26,15 +27,17 @@
   },
   "homepage": "https://github.com/kryptx/ripcord#readme",
   "dependencies": {
+    "app": "file:src/app_modules",
     "base64url": "^2.0.0",
     "body-parser": "^1.18.2",
+    "bunyan": "^1.8.12",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
-    "joi": "^13.0.2",
-    "app": "file:src/app_modules"
+    "joi": "^13.0.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",
+    "eslint": "^4.19.1",
     "mocha": "^5.0.4",
     "sinon": "^4.4.6",
     "supertest": "^3.0.0"

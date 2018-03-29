@@ -18,6 +18,6 @@ exports = module.exports = class World {
   toJSON() {
     return {
       map: this.map
-    }
+    };
   }
-}
+};

@@ -28,10 +28,10 @@ exports = module.exports = class PlayerCharacter {
       attributes: this.attributes,
       equipped: this.equipped,
       location: [ 5, 1, 5 ]
-    }
+    };
   }
 
   static fromJSON(input) {
     return new PlayerCharacter(input);
   }
-}
+};
