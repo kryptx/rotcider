@@ -1,6 +1,9 @@
 'use strict';
-// Super Duper JSON-RPC Adapter for express
-// See index.js for usage
+// Super Duper JSON Adapter for RPC web services
+// I've only implemented it as express middleware but it should be easy to implement whatever style you want.
+// "deps" and "state" are totally optional, they're passed on to your method.
+// some people like to store those things somewhere else. I like to pass them in. You do you.
+// See index.js for example usage
 const Joi = require('joi');
 const methods = require('./methods');
 
@@ -17,8 +20,15 @@ const schema = Joi.object().keys({
   id: [Joi.number(), Joi.string().allow(null)]
 });
 
+const joiError = (joiError, code) => ({
+  code,
+  message: code == -32600 ? "Invalid request." : "Invalid parameters.",
+  data: joiError.details  // assuming abortEarly: false
+})
+
 exports = module.exports = {
-  handle: deps => async (req, res, next) => {
+  express: deps => async (req, res, next) => {
+    // here's the JSON-RPC entry point. Just await invoke() with the request object or array.
     res.locals.response = await exports.invoke(req.body, deps, res.locals.state);
     return next();
   },
@@ -27,7 +37,7 @@ exports = module.exports = {
     const do_request = async (request) => {
       let result = null, error = null;
       try {
-        let safe_body = exports.validate(request, deps);
+        let safe_body = exports.validate(request);
         let rpc_method = methods[safe_body.method].handle;
         result = await rpc_method(safe_body.params, deps, state);
       }
@@ -40,8 +50,7 @@ exports = module.exports = {
       do_request(body);
   },
 
-  validate: (body, { ErrorFunnel }) => {
-    const joiError = ErrorFunnel.joi;
+  validate: body => {
     const result = Joi.validate(body, schema);
     if(result.error) throw joiError(result.error, INVALID_REQUEST);
 

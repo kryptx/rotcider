@@ -84,8 +84,7 @@ describe('App', () => {
       },
       {
         jsonrpc: '2.0',
-        method: 'ping',
-        id: 1235
+        method: 'ping'
       },
       {
         jsonrpc: '2.0',
@@ -100,9 +99,9 @@ describe('App', () => {
     ])
     .then(res => {
       Assert.equal(res.status, 200);
-      Assert.equal(res.body.length, 4);
-      Assert.equal(res.body[3].id, 1237); // note: this is not guaranteed by JSON-RPC
-      Assert.equal(res.body[2].result, 'pong');
+      Assert.equal(res.body.length, 3);
+      Assert.equal(res.body[2].id, 1237); // note: this is not guaranteed by JSON-RPC
+      Assert.equal(res.body[1].result, 'pong');
     });
   });
 });
