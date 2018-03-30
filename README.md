@@ -1,5 +1,7 @@
-# ripcord
+# ripcord 
 A JSON-RPC API implementing a traditional style of adventure game.
+
+[![CircleCI](https://circleci.com/gh/kryptx/ripcord.svg?style=svg)](https://circleci.com/gh/kryptx/ripcord)
 
 ## What is this?
 It's a side project. It's an experiment. It's also playtime and a little bit of dress rehearsal.
