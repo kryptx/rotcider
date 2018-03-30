@@ -14,8 +14,13 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t kryptx/ripcord .
-      - run: docker create kryptx/ripcord | xargs -I % docker cp %:/test-reports test-reports
+      - run:
+          name: Building image
+          command: docker build -t kryptx/ripcord .
+      - run:
+          name: Testing image
+          command: docker run -v `pwd`/test-reports:/test-reports kryptx/ripcord npm run test:ci
+
       - store_artifacts:
           path: test-reports
       - store_test_results:
