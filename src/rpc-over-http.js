@@ -1,7 +1,6 @@
 'use strict';
 
 exports = module.exports = {
-
   readState: ({ StateMarshal }) => async (req, res, next) => {
     res.locals.state = {};
     let keys = Object.keys(req.cookies);
@@ -40,5 +39,4 @@ exports = module.exports = {
     res.json({ jsonrpc: '2.0', result: null, error: { code: -32000, message: 'Unexpected error.', data: error.stack }, id: req.body.id });
     return next();
   }
-
 };

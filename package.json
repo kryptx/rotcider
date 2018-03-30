@@ -5,9 +5,9 @@
   },
   "version": "0.0.1-pre",
   "description": "An Adventure game, silly.",
-  "main": "src/index.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node .",
     "test": "`npm bin`/_mocha --recursive src --exit && `npm bin`/eslint src",
     "test:ci": "`npm bin`/nyc --reporter=lcov npm run test:junit && `npm bin`/eslint src",
     "test:junit": "`npm bin`/_mocha --recursive src --exit --reporter xunit --reporter-options output=test-reports/results.xml"

@@ -1,7 +1,7 @@
 /*eslint-env mocha */
 'use strict';
 
-const App = require('./index');
+const App = require('./app');
 const Request = require('supertest');
 const Assert = require('chai').assert;
 
@@ -81,7 +81,7 @@ describe('App', () => {
       method: 'ping'
     }).then(res => {
       Assert.equal(res.status, 204);
-      Assert.equal(res.text, '');
+      Assert.isEmpty(res.text);
     });
   });
 
@@ -109,7 +109,12 @@ describe('App', () => {
     ]).then(res => {
       Assert.equal(res.status, 200);
       Assert.equal(res.body.length, 3);
-      Assert.equal(res.body[2].id, 1237); // note: this is not guaranteed by JSON-RPC
+      Assert.deepEqual(
+        [ res.body[0].id,
+          res.body[1].id,
+          res.body[2].id ].sort(),
+        [1234, 1236, 1237]
+      );
       Assert.equal(res.body[1].result, 'pong');
     });
   });

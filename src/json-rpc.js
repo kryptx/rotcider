@@ -1,5 +1,5 @@
 'use strict';
-// Super Duper JSON Adapter for RPC web services
+// Super Duper JSON-RPC Adapter for ... javascript?
 // I've only implemented it as express middleware but it should be easy to implement whatever style you want.
 // "deps" and "state" are totally optional, they're passed on to your method.
 // some people like to store those things somewhere else. I like to pass them in. You do you.
@@ -36,7 +36,7 @@ exports = module.exports = {
     return next();
   },
 
-  invoke: async (body, deps, state) => {
+  invoke: (body, deps, state) => {
     const do_request = async (request) => {
       let result = null, error = null;
       try {

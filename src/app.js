@@ -7,17 +7,18 @@ const JsonRpc = require('./json-rpc');
 const RpcOverHttp = require('./rpc-over-http');
 
 const app = Express();
-const self = require('./app_modules');
+const deps = require('./app_modules');
+const Log = deps.Log;
 
 app.use(CookieParser('secret!'));
 app.post('/json-rpc', [
   BodyParser.json(),
-  RpcOverHttp.readState(self),
-  JsonRpc.express(self),
-  RpcOverHttp.writeState(self),
+  RpcOverHttp.readState(deps),
+  JsonRpc.express(deps),
+  RpcOverHttp.writeState(deps),
   RpcOverHttp.respond,
   RpcOverHttp.handleError,
 ]);
 
-self.Log.info('Listening on port 3000');
+Log.info('Listening on port 3000');
 module.exports = app.listen(3000);
