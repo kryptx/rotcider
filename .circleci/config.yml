@@ -18,3 +18,5 @@ jobs:
       - run: docker create kryptx/ripcord | xargs -I % docker cp %:/test-reports test-reports
       - store_artifacts:
           path: test-reports
+      - store_test_results:
+          path: test-reports
