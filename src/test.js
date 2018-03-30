@@ -20,24 +20,23 @@ describe('App', () => {
       method: 'ping',
       id: 'something'
     })
-      .then(res => {
-        Assert.equal(res.status, 500);
-        Assert.equal(res.body.error.code, INVALID_REQUEST);
-        Assert.equal(res.body.id, 'something');
-      });
+    .then(res => {
+      Assert.equal(res.status, 500);
+      Assert.equal(res.body.error.code, INVALID_REQUEST);
+      Assert.equal(res.body.id, 'something');
+    });
   });
 
   it('should respond with invalid request if method is missing', () => {
     return post({
       jsonrpc: '2.0',
       id: 'anything'
-    })
-      .then(res => {
-        Assert.equal(res.status, 500);
-        Assert.equal(res.body.error.code, INVALID_REQUEST);
-        Assert.equal(res.body.error.message, 'Invalid request.');
-        Assert.equal(res.body.id, 'anything');
-      });
+    }).then(res => {
+      Assert.equal(res.status, 500);
+      Assert.equal(res.body.error.code, INVALID_REQUEST);
+      Assert.equal(res.body.error.message, 'Invalid request.');
+      Assert.equal(res.body.id, 'anything');
+    });
   });
 
   it('should respond with method not found for invalid methods', () => {
@@ -45,24 +44,22 @@ describe('App', () => {
       jsonrpc: '2.0',
       method: 'doesnotexist',
       id: 5555
-    })
-      .then(res => {
-        Assert.equal(res.status, 500);
-        Assert.equal(res.body.error.code, METHOD_NOT_FOUND);
-        Assert.equal(res.body.id, 5555);
-      });
+    }).then(res => {
+      Assert.equal(res.status, 500);
+      Assert.equal(res.body.error.code, METHOD_NOT_FOUND);
+      Assert.equal(res.body.id, 5555);
+    });
   });
 
   it('should return errors for notifications', () => {
     return post({
       jsonrpc: '2.0',
       method: 'doesnotexist'
-    })
-      .then(res => {
-        Assert.equal(res.status, 500);
-        Assert.equal(res.body.error.code, METHOD_NOT_FOUND);
-        Assert.isNull(res.body.id);
-      });
+    }).then(res => {
+      Assert.equal(res.status, 500);
+      Assert.equal(res.body.error.code, METHOD_NOT_FOUND);
+      Assert.isNull(res.body.id);
+    });
   });
 
   it('should return pong for ping', () => {
@@ -71,23 +68,21 @@ describe('App', () => {
       method: 'ping',
       params: 'whatevs',
       id: 4242
-    })
-      .then(res => {
-        Assert.equal(res.status, 200);
-        Assert.equal(res.body.result, 'pong');
-        Assert.equal(res.body.id, 4242);
-      });
+    }).then(res => {
+      Assert.equal(res.status, 200);
+      Assert.equal(res.body.result, 'pong');
+      Assert.equal(res.body.id, 4242);
+    });
   });
 
   it('should remain silent if no id is given', () => {
     return post({
       jsonrpc: '2.0',
       method: 'ping'
-    })
-      .then(res => {
-        Assert.equal(res.status, 204);
-        Assert.equal(res.text, '');
-      });
+    }).then(res => {
+      Assert.equal(res.status, 204);
+      Assert.equal(res.text, '');
+    });
   });
 
   it('should allow batches', () => {
@@ -111,12 +106,11 @@ describe('App', () => {
         method: 'ping',
         id: 1237
       },
-    ])
-      .then(res => {
-        Assert.equal(res.status, 200);
-        Assert.equal(res.body.length, 3);
-        Assert.equal(res.body[2].id, 1237); // note: this is not guaranteed by JSON-RPC
-        Assert.equal(res.body[1].result, 'pong');
-      });
+    ]).then(res => {
+      Assert.equal(res.status, 200);
+      Assert.equal(res.body.length, 3);
+      Assert.equal(res.body[2].id, 1237); // note: this is not guaranteed by JSON-RPC
+      Assert.equal(res.body[1].result, 'pong');
+    });
   });
 });

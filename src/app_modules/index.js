@@ -1,9 +1,9 @@
 'use strict';
 
-const StateMarshal = require('./state-marshal');
-const PlayerCharacter = require('./player-character');
-const World = require('./world');
 const Log = require('./logger');
+const PlayerCharacter = require('./player-character');
+const StateMarshal = require('./state-marshal');
+const World = require('./world');
 
 module.exports = {
   Log,

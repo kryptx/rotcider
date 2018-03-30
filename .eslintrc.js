@@ -8,21 +8,10 @@ module.exports = {
         "ecmaVersion": 8
     },
     "rules": {
-        "indent": [
-            "error",
-            2
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ]
+        "indent": [ "error", 2, { "MemberExpression": "off" } ],
+        "linebreak-style": [ "error", "unix" ],
+        "quotes": [ "error", "single" ],
+        "semi": [ "error", "always" ],
+        "complexity": [ "warn", 5 ]
     }
 };

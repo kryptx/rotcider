@@ -27,11 +27,9 @@ exports = module.exports = {
     if(!res.locals.response) {
       res.status(204).end();
     } else {
-      // I have seen the JSON-RPC-over-HTTP spec that suggests
-      // HTTP codes to map to certain JSON-RPC errors
-      // Since they could create ambiguity, and also because
-      // not all implementations will support an out-of-band
-      // error code, I've decided to stick with error/success
+      // I have seen the JSON-RPC-over-HTTP spec that suggests HTTP codes for each of certain JSON-RPC errors.
+      // Since they could create ambiguity, and also because not all transports will support it,
+      // I've decided to stick with error/success.
       res.status(res.locals.response.error ? 500 : 200).json(res.locals.response);
     }
     return next();
