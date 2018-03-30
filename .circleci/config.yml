@@ -15,4 +15,6 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: docker build -t kryptx/ripcord .
-      - run: docker create kryptx/ripcord | xargs -I % docker cp %:/test-reports $CIRCLE_ARTIFACTS/test-reports
+      - run: docker create kryptx/ripcord | xargs -I % docker cp %:/test-reports test-reports
+      - store_artifacts:
+          path: test-reports
