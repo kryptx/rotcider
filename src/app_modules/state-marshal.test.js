@@ -1,7 +1,7 @@
 /*eslint-env mocha */
 'use strict';
 
-const StateMarshal = require('./index');
+const StateMarshal = require('./state-marshal');
 const Assert = require('chai').assert;
 
 // name like "modem"

@@ -9,7 +9,7 @@
       "cwd": "${workspaceFolder}",
       "args": [
         "--recursive",
-        "src/**/test.js",
+        "src/**/*.test.js",
         "--exit"
       ]
     },

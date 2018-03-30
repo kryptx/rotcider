@@ -8,7 +8,9 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "`npm bin`/_mocha --recursive src/**/test.js --exit && `npm bin`/eslint src"
+    "test": "`npm bin`/_mocha --recursive src --exit && `npm bin`/eslint src",
+    "test:ci": "`npm bin`/nyc --reporter=lcov npm run test:junit && `npm bin`/eslint src",
+    "test:junit": "`npm bin`/_mocha --recursive src --exit --reporter xunit --reporter-options output=test-reports/results.xml"
   },
   "repository": {
     "type": "git",
@@ -38,7 +40,11 @@
     "chai": "^4.1.2",
     "eslint": "^4.19.1",
     "mocha": "^5.0.4",
+    "nyc": "^11.6.0",
     "sinon": "^4.4.6",
     "supertest": "^3.0.0"
+  },
+  "nyc": {
+    "report-dir": "test-reports"
   }
 }

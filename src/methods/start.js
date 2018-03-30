@@ -7,9 +7,10 @@ exports = module.exports = {
     force: Joi.boolean().optional()
   }).optional(),
   handle: async (args, { PlayerCharacter, World }, state) => {
-    if(state.player && (!args || !args.force)) return {
-      message: 'You already have a player. To create a new one anyway, pass the parameter force: true.'
-    };
+    if(state.player && (!args || !args.force))
+      return {
+        message: 'You already have a character. To start over, pass the parameter force: true.'
+      };
 
     state.player = new PlayerCharacter();
     state.world = new World();

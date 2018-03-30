@@ -4,10 +4,6 @@ RUN yarn
 
 FROM base AS copy
 COPY . /
-
-FROM copy AS test
-RUN npm test
-
-FROM copy
+RUN npm run test:ci
 EXPOSE 3000
 CMD node .

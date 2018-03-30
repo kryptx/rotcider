@@ -14,4 +14,4 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t kryptx/ripcord .
+      - run: docker build -t kryptx/ripcord -v $CIRCLE_ARTIFACTS:/test-reports .
