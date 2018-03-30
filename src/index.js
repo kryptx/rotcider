@@ -7,7 +7,7 @@ const JsonRpc = require('./json-rpc');
 const RpcOverHttp = require('./rpc-over-http');
 
 const app = Express();
-const self = require('app');
+const self = require('./app_modules');
 
 app.use(CookieParser('secret!'));
 app.post('/json-rpc', [
