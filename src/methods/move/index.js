@@ -4,7 +4,7 @@ const Joi = require('joi');
 
 let normalize = input => {
   return input.toLowerCase()
-    .splice(1)
+    .substr(0, 1)
     .replace('f', 'n')
     .replace('r', 'e')
     .replace('b', 's')
@@ -58,7 +58,8 @@ module.exports = {
       };
     } else {
       return {
-        message: 'It doesn\'t look like you can go that way.'
+        message: 'It doesn\'t look like you can go that way.',
+        location: player.location
       };
     }
   }
