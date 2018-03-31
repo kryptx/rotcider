@@ -19,7 +19,9 @@ jobs:
           command: docker build -t kryptx/ripcord .
       - run:
           name: Testing image
-          command: docker run -v /root/repo/test-reports:/test-reports kryptx/ripcord npm run test:ci
+          command: |
+            docker run --name ripcord kryptx/ripcord npm run test:ci
+            docker cp ripcord:/test-results test-results
 
       - store_artifacts:
           path: test-reports
