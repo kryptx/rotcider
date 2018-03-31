@@ -12,6 +12,7 @@ module.exports = {
         "linebreak-style": [ "error", "unix" ],
         "quotes": [ "error", "single" ],
         "semi": [ "error", "always" ],
-        "complexity": [ "warn", 5 ]
+        "block-spacing": [ 2, "always" ], // not working for me
+        "complexity": [ "warn", 5 ],
     }
 };

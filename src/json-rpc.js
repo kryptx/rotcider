@@ -31,11 +31,11 @@ const joiError = (joiError, code) => ({
 
 exports = module.exports = {
   express: deps => async (req, res, next) => {
-    // here's the JSON-RPC entry point. Just await invoke() with the request object or array.
     res.locals.response = await exports.invoke(req.body, deps, res.locals.state);
     return next();
   },
 
+  // here's the JSON-RPC entry point. Just await invoke() with the request object or array.
   invoke: (body, deps, state) => {
     const do_request = async (request) => {
       let result = null, error = null;

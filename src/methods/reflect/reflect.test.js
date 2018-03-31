@@ -2,7 +2,7 @@
 'use strict';
 
 const Assert = require('chai').assert;
-const Reflect = require('./reflect');
+const Reflect = require('./index');
 
 describe('Reflect method', () => {
   it('should return the player state', async () => {
