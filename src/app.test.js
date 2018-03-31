@@ -85,6 +85,22 @@ describe('App', () => {
     });
   });
 
+  it('should send cookies in response to start', () => {
+    return post({
+      jsonrpc: '2.0',
+      method: 'start',
+      id: 'poop'
+    }).then(res => {
+      let cookies = res.header['set-cookie'].reduce((obj, cookie) => {
+        let parts = cookie.split('=');
+        obj[parts[0]] = parts[1];
+        return obj;
+      }, {});
+      Assert.exists(cookies.world);
+      Assert.exists(cookies.character);
+    });
+  });
+
   it('should allow batches', () => {
     return post([
       {
