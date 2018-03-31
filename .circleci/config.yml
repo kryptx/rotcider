@@ -17,6 +17,7 @@ jobs:
       - run:
           name: Building image
           command: docker build -t kryptx/ripcord .
+      - run: pwd
       - run:
           name: Testing image
           command: docker run -v `pwd`/test-reports:/test-reports kryptx/ripcord npm run test:ci
