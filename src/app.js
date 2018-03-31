@@ -17,8 +17,8 @@ app.post('/json-rpc', [
   JsonRpc.express(deps),
   RpcOverHttp.writeState(deps),
   RpcOverHttp.respond,
-  RpcOverHttp.logRequest(deps),
   RpcOverHttp.handleError,
+  RpcOverHttp.logRequest(deps),
 ]);
 
 Log.info('Listening on port 3000');
