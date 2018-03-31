@@ -5,14 +5,15 @@ const Joi = require('joi');
 exports = module.exports = {
   schema: Joi.any().optional(),
   handle: async (args, deps, state) => {
-    if(!state.player) {
+    if(state && state.player) {
       return {
-        message: 'You haven\'t created a character yet. To create one, use the \'start\' method.',
-        player: null
+        player: state.player
       };
     }
+
     return {
-      player: state.player
+      message: 'You haven\'t created a character yet. To create one, use the \'start\' method.',
+      player: null
     };
   }
 };
