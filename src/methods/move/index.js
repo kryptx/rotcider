@@ -11,8 +11,8 @@ let normalize = input => {
     .replace('l', 'w');
 };
 
-let move = (player, direction) => {
-  let [ x, y, z ] = player.location;
+let move = (character, direction) => {
+  let [ x, y, z ] = character.location;
 
   const ops = {
     n: () => z++,
@@ -25,7 +25,7 @@ let move = (player, direction) => {
 
   ops[direction]();
 
-  return player.location = [ x, y, z ];
+  return character.location = [ x, y, z ];
 };
 
 module.exports = {
@@ -37,11 +37,11 @@ module.exports = {
       'back','backward','forward'
     ]).insensitive().required()
   }).required(),
-  requirements: [ 'player' ],
+  requirements: [ 'character' ],
   handle: async (args, deps, state) => {
     const world = state.world;
-    const player = state.player;
-    let [ x, y, z ] = player.location;
+    const character = state.character;
+    let [ x, y, z ] = character.location;
     const room = world && world[x][y][z];
 
     if(!room) return {
@@ -50,7 +50,7 @@ module.exports = {
 
     const direction = normalize(args.direction);
     if(room.mayExit(direction)) {
-      [ x, y, z ] = move(state.player, direction);
+      [ x, y, z ] = move(state.character, direction);
       return {
         message: 'Moved successfully.',
         location: [ x, y, z ],
@@ -59,7 +59,7 @@ module.exports = {
     } else {
       return {
         message: 'It doesn\'t look like you can go that way.',
-        location: player.location
+        location: character.location
       };
     }
   }

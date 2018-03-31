@@ -5,8 +5,8 @@ const Assert = require('chai').assert;
 const Reflect = require('./index');
 
 describe('Reflect method', () => {
-  it('should return the player state', async () => {
-    const result = await Reflect.handle(null, null, { player: 'literally anything' });
-    Assert.equal(result.player, 'literally anything');
+  it('should return the character state', async () => {
+    const result = await Reflect.handle(null, null, { character: 'literally anything' });
+    Assert.equal(result.character, 'literally anything');
   });
 });

@@ -4,10 +4,10 @@ const Joi = require('joi');
 
 exports = module.exports = {
   schema: Joi.any().optional(),
-  requirements: [ 'player' ],
+  requirements: [ 'character' ],
   handle: async (args, deps, state) => {
     return {
-      player: state.player
+      character: state.character
     };
   }
 };

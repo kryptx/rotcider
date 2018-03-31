@@ -58,7 +58,7 @@ exports = module.exports = {
 
   check: (requirements, state) => {
     if(!requirements) return null;
-    if(requirements.includes('player') && (!state || !state.player)) {
+    if(requirements.includes('character') && (!state || !state.character)) {
       return {
         message: 'Who are you again?',
         hint: 'start'

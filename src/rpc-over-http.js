@@ -1,6 +1,15 @@
 'use strict';
 
 exports = module.exports = {
+  logRequest: ({ Log }) => (req, res, next) => {
+    Log.info({
+      message: 'request',
+      request: req.body,
+      response: res.locals.response,
+      status: res.statusCode
+    });
+    next();
+  },
   readState: ({ StateMarshal }) => async (req, res, next) => {
     res.locals.state = {};
     let keys = Object.keys(req.cookies);

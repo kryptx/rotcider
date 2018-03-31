@@ -6,14 +6,14 @@ const JsonRpc = require('./json-rpc');
 
 describe('JSON-RPC', () => {
   describe('.check', () => {
-    describe('for player', () => {
-      it('should return a start hint if there is no player', () => {
-        let result = JsonRpc.check([ 'player' ], {});
+    describe('for character', () => {
+      it('should return a start hint if there is no character', () => {
+        let result = JsonRpc.check([ 'character' ], {});
         Assert.equal(result.hint, 'start');
-        Assert.notExists(result.player);
+        Assert.notExists(result.character);
       });
-      it('should return null (no violations) if the player exists', () => {
-        let result = JsonRpc.check([ 'player' ], { player: { stuff: 'things' } });
+      it('should return null (no violations) if the character exists', () => {
+        let result = JsonRpc.check([ 'character' ], { character: { stuff: 'things' } });
         Assert.notExists(result);
       });
     });

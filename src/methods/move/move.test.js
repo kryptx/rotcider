@@ -20,14 +20,18 @@ for(let i = 0; i < 5; i++) {
 const hallwayWorld = [ [ rooms ] ];
 
 context('move method', () => {
-  let state = { player: { location: [ 0, 0, 0 ] }};
+  let state = { character: { location: [ 0, 0, 0 ] }};
   describe('.handle', () => {
-    beforeEach(() => state = { player: { location: [0, 0, 0] }, world: hallwayWorld });
+    beforeEach(() => state = { character: { location: [0, 0, 0] }, world: hallwayWorld });
+
+    it('should require a character', () => {
+      Assert.include(move.requirements, 'character');
+    });
 
     it('should not move in a direction with no exit', async () => {
       let result = await move.handle({ direction: 'RIGHT' }, null, state);
       Assert.exists(result);
-      // don't compare to state.player.location. that may have changed
+      // don't compare to state.character.location. that may have changed
       Assert.deepEqual(result.location, [ 0, 0, 0 ]);
     });
 
