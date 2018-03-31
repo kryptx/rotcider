@@ -20,8 +20,8 @@ jobs:
       - run:
           name: Testing image
           command: |
-            docker run --name ripcord kryptx/ripcord npm run test:ci
-            docker cp ripcord:/test-results test-results
+            docker run --name ripcord -v /test-reports kryptx/ripcord npm run test:ci
+            docker cp ripcord:/test-reports test-reports
 
       - store_artifacts:
           path: test-reports
