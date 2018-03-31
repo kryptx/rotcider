@@ -118,18 +118,4 @@ describe('App', () => {
       Assert.equal(res.body[1].result, 'pong');
     });
   });
-  describe('requirements module', () => {
-    it('should require a player', () => {
-      // TODO: create a route that requires one, here in the test, rather than using reflect
-      return post({
-        jsonrpc: '2.0',
-        method: 'reflect',
-        id: 22
-      }).then(res => {
-        Assert.equal(res.status, 200);
-        Assert.equal(res.body.result.hint, 'start');
-        Assert.notExists(res.body.result.player);
-      });
-    });
-  });
 });
