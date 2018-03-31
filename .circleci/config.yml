@@ -9,7 +9,7 @@ jobs:
       # specify the version you desire here
       - image: docker:stable-git
 
-    working_directory: ~/repo
+    working_directory: /root/repo
 
     steps:
       - checkout
@@ -17,10 +17,9 @@ jobs:
       - run:
           name: Building image
           command: docker build -t kryptx/ripcord .
-      - run: pwd
       - run:
           name: Testing image
-          command: docker run -v `pwd`/test-reports:/test-reports kryptx/ripcord npm run test:ci
+          command: docker run -v /root/repo/test-reports:/test-reports kryptx/ripcord npm run test:ci
 
       - store_artifacts:
           path: test-reports
