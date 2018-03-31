@@ -127,6 +127,8 @@ describe('App', () => {
         id: 22
       }).then(res => {
         Assert.equal(res.status, 200);
+        Assert.equal(res.body.result.hint, 'start');
+        Assert.notExists(res.body.result.player);
       });
     });
   });
