@@ -41,16 +41,31 @@ exports = module.exports = {
       let result = null, error = null;
       try {
         let safe_body = exports.validate(request);
-        let rpc_method = methods[safe_body.method].handle;
-        result = await rpc_method(safe_body.params, deps, state);
+        let { requirements, handle } = methods[safe_body.method];
+        result = exports.check(requirements, state) || await handle(safe_body.params, deps, state);
       }
       catch (e) { error = e; }
-      return (request.id || error) ? { jsonrpc: '2.0', result, error, id: request.id || null } : null;
+      return exports.buildResponse(request, result, error);
     };
     return Array.isArray(body) ?
-      Promise.all(body.map(do_request))
-        .then(results => results.filter(n => n !== null)) :
+      Promise.all(body.map(do_request)).then(results => results.filter(n => n !== null)) :
       do_request(body);
+  },
+
+  buildResponse:(request, result, error) => {
+    return (request.id || error) ? { jsonrpc: '2.0', result, error, id: request.id || null } : null;
+  },
+
+  check: (requirements, state) => {
+    if(!requirements) return null;
+    if(requirements.includes('player') && (!state || !state.player)) {
+      return {
+        message: 'Who are you again?',
+        hint: 'start'
+      };
+    } else {
+      return null;
+    }
   },
 
   validate: body => {

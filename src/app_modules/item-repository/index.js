@@ -26,7 +26,7 @@ const schema = {
 };
 
 exports = module.exports = {
-  clear: () => Items.splice(0),
+  purge: () => Items.splice(0),
   schema: Joi.object().keys(schema),
   getById: id => Items[id] ? Object.assign({ id }, Items[id]) : null,
   insert: item => {

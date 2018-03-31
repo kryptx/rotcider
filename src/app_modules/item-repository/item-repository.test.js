@@ -4,9 +4,42 @@
 const ItemRepository = require('./index');
 const Assert = require('chai').assert;
 
+let exampleItems = [
+  {
+    type: 'weapon',
+    weight: 3,
+    value: 40,
+    weapon: {
+      damage: 8,
+      range: 2
+    }
+  },
+  {
+    type: 'armor',
+    weight: 5,
+    value: 60,
+    armor: {
+      protection: 10
+    }
+  },
+  {
+    type: 'jewelry',
+    weight: 5,
+    value: 60,
+    jewelry: {
+      inspiration: 69
+    }
+  },
+  {
+    type: 'food',
+    weight: 5,
+    value: 60
+  },
+];
+
 describe('Item Repository', () => {
   describe('insert', () => {
-    beforeEach(() => ItemRepository.clear());
+    beforeEach(() => ItemRepository.purge());
 
     it('should reject an item with an invalid schema', () => {
       try { ItemRepository.insert({ just: 'anything' }); }
@@ -115,43 +148,15 @@ describe('Item Repository', () => {
     });
 
     it('should be able to import batch of data', () => {
-      let items = [
-        {
-          type: 'weapon',
-          weight: 3,
-          value: 40,
-          weapon: {
-            damage: 8,
-            range: 2
-          }
-        },
-        {
-          type: 'armor',
-          weight: 5,
-          value: 60,
-          armor: {
-            protection: 10
-          }
-        },
-        {
-          type: 'jewelry',
-          weight: 5,
-          value: 60,
-          jewelry: {
-            inspiration: 69
-          }
-        },
-        {
-          type: 'food',
-          weight: 5,
-          value: 60
-        },
-      ];
-      let ids = ItemRepository.insert(items);
+      let ids = ItemRepository.insert(exampleItems);
       for(let i = 0; i < ids.length; i ++) {
-        Assert.deepEqual(ItemRepository.getById(ids[i]), Object.assign({ id: ids[i] }, items[i]));
+        Assert.deepEqual(ItemRepository.getById(ids[i]), Object.assign({ id: ids[i] }, exampleItems[i]));
       }
     });
   });
-  it('should be able to export all of its data');
+  it('should be able to export all of its data', () => {
+    ItemRepository.insert(exampleItems);
+    let data = ItemRepository.export();
+    Assert.deepEqual(data, exampleItems);
+  });
 });
