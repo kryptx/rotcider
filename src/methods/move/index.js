@@ -2,15 +2,6 @@
 
 const Joi = require('joi');
 
-let normalize = input => {
-  return input.toLowerCase()
-    .substr(0, 1)
-    .replace('f', 'n')
-    .replace('r', 'e')
-    .replace('b', 's')
-    .replace('l', 'w');
-};
-
 module.exports = {
   schema: Joi.object().keys({
     direction: Joi.string().valid([
@@ -21,7 +12,7 @@ module.exports = {
     ]).insensitive().required()
   }).required(),
   requirements: [ 'character' ],
-  handle: async (args, deps, state) => {
+  handle: async (args, { Directions }, state) => {
     const character = state.character;
     const room = character.room;
 
@@ -29,7 +20,7 @@ module.exports = {
       message: 'You seem to be floating in the nether. Has no one created a world for you?',
     };
 
-    const direction = normalize(args.direction);
+    const direction = Directions.normalize(args.direction, character.facing);
     if(room.mayExit(direction)) {
       state.character.room = room.exits[direction];
       return {

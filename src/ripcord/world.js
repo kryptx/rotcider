@@ -6,8 +6,10 @@ const rooms = [];
 const intInRange = ([ min, max ]) => Math.ceil(Math.random() * (1 + max - min));
 
 exports = module.exports = class World {
-  constructor() {
-    rooms.push(new Room({ rooms }));
+  constructor(empty = false) {
+    if(!empty) {
+      rooms.push(new Room());
+    }
   }
 
   get start() {
@@ -59,12 +61,27 @@ exports = module.exports = class World {
         location: r.location,
         description: r.description,
         items: r.items,
-        exits: r.exits
+        exits: {}
       };
       for(let dir of Object.keys(r.exits)) {
         room.exits[dir] = rooms.indexOf(r.exits[dir]);
       }
       return room;
     });
+  }
+
+  populate(raw_rooms) {
+    rooms.push(...raw_rooms);
+    for(let room of raw_rooms) {
+      for(let dir of Object.keys(room.exits)) {
+        room.exits[dir] = rooms[room.exits[dir]];
+      }
+    }
+  }
+
+  static fromJSON(raw_rooms) {
+    let world = new World(true);
+    world.populate(raw_rooms);
+    return world;
   }
 };

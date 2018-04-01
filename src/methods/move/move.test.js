@@ -3,7 +3,8 @@
 
 const Assert = require('chai').assert;
 const move = require('./index');
-const World = require('../../ripcord').World;
+const deps = require('../../ripcord');
+const World = deps.World;
 
 // let rooms = [];
 // for(let i = 0; i < 5; i++) {
@@ -26,7 +27,7 @@ context('move method', () => {
     });
 
     it('should not move in a direction with no exit', async () => {
-      let result = await move.handle({ direction: 'RIGHT' }, null, state);
+      let result = await move.handle({ direction: 'RIGHT' }, deps, state);
       Assert.exists(result);
       // Assert.equal(result.room, world.start);
     });

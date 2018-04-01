@@ -1,37 +1,9 @@
 'use strict';
 
-let directions = [ 'n', 's', 'e', 'w', 'u', 'd' ];
-
-let move = ([ x, y, z ], direction) => {
-
-  const ops = {
-    n: () => z++,
-    e: () => x++,
-    s: () => z--,
-    w: () => x--,
-    u: () => y++,
-    d: () => y--
-  };
-
-  ops[direction]();
-
-  return [ x, y, z ];
-};
-
-let opposite = direction => {
-  const results = {
-    n: 's',
-    s: 'n',
-    e: 'w',
-    w: 'e',
-    u: 'd',
-    d: 'u',
-  };
-  return results[direction];
-};
+const Directions = require('../directions');
 
 module.exports = class Room {
-  constructor(opts) {
+  constructor(opts = {}) {
     this.location = opts.location || [ 0, 0, 0 ];
     this.stage = opts.stage || 0;
     this.exits = Object.assign({}, opts.exits);
@@ -40,21 +12,21 @@ module.exports = class Room {
   }
 
   addConnection(direction, room) {
-    room.location = move(this.location, direction);
+    room.location = Directions.move(this.location, direction);
     this.exits[direction] = room;
-    room.exits[opposite(direction)] = this;
+    room.exits[Directions.opposite(direction)] = this;
     return room;
   }
 
   addRandomConnection(rooms) {
-    let candidates = directions.filter(d => !this.exits[d]);
+    let candidates = Directions.list.filter(d => !this.exits[d]);
     if(candidates.length) {
       let direction = candidates[Math.floor(Math.random() * candidates.length)];
-      let newLocation = move(this.location, direction);
+      let newLocation = Directions.move(this.location, direction);
       let targetRoom = rooms.filter(r => r.location === newLocation);
       if(targetRoom && targetRoom.stage === this.stage) {
         this.exits[direction] = targetRoom;
-        targetRoom.exits[opposite(direction)] = this;
+        targetRoom.exits[Directions.opposite(direction)] = this;
         return targetRoom;
       }
       return this.addConnection(direction, new Room({ stage: this.stage }));
