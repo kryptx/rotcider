@@ -17,8 +17,9 @@
       "type": "node",
       "request": "launch",
       "name": "Launch",
-      "program": "${workspaceFolder}/src/index.js",
-      "cwd": "${workspaceFolder}"
+      "program": "${workspaceFolder}/src/app.js",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
     }
   ]
 }

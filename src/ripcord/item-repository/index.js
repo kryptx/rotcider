@@ -17,7 +17,7 @@ const schemas = {
 };
 
 const schema = {
-  type: Joi.string().valid('weapon','armor','jewelry','food','consumable','valuable').required(),
+  type: Joi.string().valid('weapon','armor','jewelry','food','consumable','valuable','key').required(),
   weight: Joi.number().required(),
   value: Joi.number().required(),
   weapon: Joi.object().when('type', { is: 'weapon', then: schemas.weapon.required(), otherwise: Joi.forbidden() }),

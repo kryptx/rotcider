@@ -2,7 +2,7 @@
 
 exports = module.exports = class PlayerCharacter {
   constructor(input = {}) {
-    this.location = input.location || [ 5, 1, 5 ];
+    this.room = input.room || null;
     this.inventory = input.inventory || [];
     this.attributes = input.attributes || {
       maxHealth: 10,
@@ -27,7 +27,7 @@ exports = module.exports = class PlayerCharacter {
       inventory: this.inventory,
       attributes: this.attributes,
       equipped: this.equipped,
-      location: [ 5, 1, 5 ]
+      location: this.room.location
     };
   }
 

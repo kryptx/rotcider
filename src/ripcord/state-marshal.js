@@ -8,6 +8,7 @@ const EncodingVersion = 0;
 const zip = Promisify(Zlib.deflate);
 const unzip = Promisify(Zlib.unzip);
 const prependVersion = str => EncodingVersion + '/' + str;
+const serialize = obj => obj.toJSON ? obj.toJSON() : obj;
 
 exports = module.exports = {
   encode: async pojo => {
@@ -15,6 +16,7 @@ exports = module.exports = {
     case 0:
     default:
       return Promise.resolve(pojo)
+        .then(serialize)
         .then(JSON.stringify)
         .then(zip)
         .then(Base64url.encode)

@@ -3,26 +3,23 @@
 
 const Assert = require('chai').assert;
 const move = require('./index');
-const Room = require('../../app_modules').Room;
+const World = require('../../ripcord').World;
 
-let rooms = [];
-for(let i = 0; i < 5; i++) {
-  let opts = { exits: {} };
-  let room = new Room(opts);
-  if(i > 0) {
-    opts.exits.s = rooms[i - 1];
-    room = new Room(opts);
-    rooms[i - 1].addExit('n', room);
-  }
-  rooms.push(room);
-}
+// let rooms = [];
+// for(let i = 0; i < 5; i++) {
+//   let room = new Room();
+//   if(i > 0) {
+//     room = rooms[i - 1].addConnection('n', new Room());
+//   }
+//   rooms.push(room);
+// }
 
-const hallwayWorld = [ [ rooms ] ];
+let world = new World();
 
 context('move method', () => {
-  let state = { character: { location: [ 0, 0, 0 ] }};
+  let state = { character: { room: world.start }};
   describe('.handle', () => {
-    beforeEach(() => state = { character: { location: [0, 0, 0] }, world: hallwayWorld });
+    beforeEach(() => state = { character: { room: world.start }, world });
 
     it('should require a character', () => {
       Assert.include(move.requirements, 'character');
@@ -31,14 +28,13 @@ context('move method', () => {
     it('should not move in a direction with no exit', async () => {
       let result = await move.handle({ direction: 'RIGHT' }, null, state);
       Assert.exists(result);
-      // don't compare to state.character.location. that may have changed
-      Assert.deepEqual(result.location, [ 0, 0, 0 ]);
+      // Assert.equal(result.room, world.start);
     });
 
-    it('should move one unit', async () => {
-      let result = await move.handle({ direction: 'FORward' }, null, state);
-      Assert.exists(result);
-      Assert.deepEqual(result.location, [ 0, 0, 1 ]);
-    });
+    // it('should move one unit', async () => {
+    //   let result = await move.handle({ direction: 'FORward' }, null, state);
+    //   Assert.exists(result);
+    //   Assert.equal(result.room, rooms[1]);
+    // });
   });
 });

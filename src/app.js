@@ -7,7 +7,7 @@ const JsonRpc = require('./json-rpc');
 const RpcOverHttp = require('./rpc-over-http');
 
 const app = Express();
-const deps = require('./app_modules');
+const deps = require('./ripcord');
 const Log = deps.Log;
 
 app.use(CookieParser('secret!'));
