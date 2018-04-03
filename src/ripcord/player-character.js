@@ -2,16 +2,18 @@
 
 exports = module.exports = class PlayerCharacter {
   constructor(input = {}) {
-    this.room = input.room || null;
-    this.inventory = input.inventory || [];
-    this.facing = input.facing || 'n';
-    this.attributes = input.attributes || {
-      maxHealth: 10,
-      health: 10,
-      strength: 5,
-      dexterity: 5,
-      wisdom: 5,
-    };
+    Object.assign(this, {
+      room: null,
+      inventory: [],
+      facing: 'n',
+      attributes: {
+        maxHealth: 10,
+        health: 10,
+        strength: 5,
+        dexterity: 5,
+        wisdom: 5,
+      }
+    }, input);
   }
 
   get equipped() {
@@ -27,8 +29,8 @@ exports = module.exports = class PlayerCharacter {
     return {
       inventory: this.inventory,
       attributes: this.attributes,
-      equipped: this.equipped,
-      location: this.room && this.room.location
+      room: this.room.toJSON(),
+      facing: this.facing,
     };
   }
 

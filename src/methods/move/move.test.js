@@ -29,7 +29,7 @@ context('move method', () => {
     it('should not move in a direction with no exit', async () => {
       let result = await move.handle({ direction: 'RIGHT' }, deps, state);
       Assert.exists(result);
-      // Assert.equal(result.room, world.start);
+      Assert.deepEqual(result.room, state.world.start.toJSON());
     });
 
     // it('should move one unit', async () => {

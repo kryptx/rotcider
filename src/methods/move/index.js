@@ -17,7 +17,7 @@ module.exports = {
     const room = character.room;
 
     if(!room) return {
-      message: 'You seem to be floating in the nether. Has no one created a world for you?',
+      message: 'You seem to be floating in the nether. This is almost certainly a bug.',
     };
 
     const direction = Directions.normalize(args.direction, character.facing);
@@ -30,7 +30,7 @@ module.exports = {
     } else {
       return {
         message: 'It doesn\'t look like you can go that way.',
-        room: character.room
+        room: character.room.toJSON()
       };
     }
   }

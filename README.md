@@ -1,4 +1,4 @@
-# ripcord 
+# ripcord
 A JSON-RPC API implementing a traditional style of adventure game.
 
 [![CircleCI](https://circleci.com/gh/kryptx/ripcord.svg?style=svg)](https://circleci.com/gh/kryptx/ripcord)
@@ -10,7 +10,7 @@ Since RPC has fallen so far out of favor (thanks to REST), I wanted to imagine w
 
 For that purpose, I've introduced an entity -- a player character -- to which the user can issue commands. Much like the classic game, Adventure.
 
-The API meets the [JSON-RPC 2.0 Specification](http://www.jsonrpc.org/specification). It is not backwards compatible to any prior version in any way. It currently does _nothing of value_.
+The API meets the [JSON-RPC 2.0 Specification](http://www.jsonrpc.org/specification). It is not backwards compatible to any prior version in any way.
 
 ## How to run
 There are a few ways. This one's pretty good and only requires docker.
@@ -37,9 +37,8 @@ POST /json-rpc
 8. Look at this page later.
 
 ### Methods
-
 #### `move`
-Move one _unit_. One space, if you imagine your character is on a game board. Not actually implemented, but it'll tell you it worked.
+Move to the next room, in the provided direction.
 
 #### `ping`
 Responds with `"pong"`. Unless, of course, you don't provide an id.

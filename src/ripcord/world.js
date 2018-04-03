@@ -1,25 +1,33 @@
 'use strict';
 
 const Room = require('./room');
-const rooms = [];
 
 const intInRange = ([ min, max ]) => Math.ceil(Math.random() * (1 + max - min));
 
 exports = module.exports = class World {
   constructor(empty = false) {
+    this.rooms = [];
     if(!empty) {
-      rooms.push(new Room());
+      this.rooms.push(new Room());
     }
   }
 
   get start() {
-    return rooms[0];
+    return this.rooms[0];
+  }
+
+  roomAt(location) {
+    return this.rooms.find(r =>
+      r.location[0] == location[0] &&
+      r.location[1] == location[1] &&
+      r.location[2] == location[2]
+    );
   }
 
   createBranch(tip, length) {
     let actual_length = intInRange(length);
     for(let i = 0; i < actual_length; i++) {
-      rooms.push(tip = tip.addRandomConnection(rooms));
+      this.rooms.push(tip = tip.addRandomConnection(this.rooms));
     }
     return tip;
   }
@@ -55,7 +63,7 @@ exports = module.exports = class World {
   }
 
   toJSON() {
-    return rooms.map(r => {
+    return this.rooms.map(r => {
       let room = {
         stage: r.stage,
         location: r.location,
@@ -64,17 +72,17 @@ exports = module.exports = class World {
         exits: {}
       };
       for(let dir of Object.keys(r.exits)) {
-        room.exits[dir] = rooms.indexOf(r.exits[dir]);
+        room.exits[dir] = this.rooms.indexOf(r.exits[dir]);
       }
       return room;
     });
   }
 
   populate(raw_rooms) {
-    rooms.push(...raw_rooms);
-    for(let room of raw_rooms) {
-      for(let dir of Object.keys(room.exits)) {
-        room.exits[dir] = rooms[room.exits[dir]];
+    this.rooms = raw_rooms.map(r => Room.fromJSON(r));
+    for(let r of this.rooms) {
+      for(let dir of Object.keys(r.exits)) {
+        r.exits[dir] = this.rooms[r.exits[dir]];
       }
     }
   }

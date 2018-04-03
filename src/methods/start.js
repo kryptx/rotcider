@@ -17,7 +17,7 @@ exports = module.exports = {
 
     return {
       message: 'Welcome to the RPC over HTTP adventure. A character and a world have been created and sent to you as cookies. The decoded contents of the character cookie are included in this response, and you can view it anytime with the "reflect" method. The world cookie can only be inspected by playing!',
-      character: state.character
+      character: state.character.toJSON()
     };
   }
 };

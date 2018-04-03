@@ -4,11 +4,15 @@ const Directions = require('../directions');
 
 module.exports = class Room {
   constructor(opts = {}) {
-    this.location = opts.location || [ 0, 0, 0 ];
-    this.stage = opts.stage || 0;
-    this.exits = Object.assign({}, opts.exits);
-    this.description = opts.description || 'It is a room. It seems to have four walls.';
-    this.items = opts.items || [];
+    let defaults = {
+      location: [ 0, 0, 0 ],
+      stage: 0,
+      exits: {},
+      description: 'It is a room. It seems to have four walls.',
+      items: [],
+      enemies: []
+    };
+    Object.assign(this, defaults, opts);
   }
 
   addConnection(direction, room) {
@@ -43,5 +47,19 @@ module.exports = class Room {
   // will provide an alternative implementation
   mayExit(direction) {
     return !!this.exits[direction];
+  }
+
+  static fromJSON(r) {
+    return new Room(r);
+  }
+
+  toJSON() {
+    return {
+      location: this.location,
+      exits: Object.keys(this.exits),
+      description: this.description,
+      items: this.items,
+      enemies: this.enemies
+    };
   }
 };

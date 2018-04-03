@@ -7,7 +7,7 @@ exports = module.exports = {
   requirements: [ 'character' ],
   handle: async (args, deps, state) => {
     return {
-      character: state.character
+      character: state.character.toJSON()
     };
   }
 };

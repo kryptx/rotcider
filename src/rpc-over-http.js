@@ -10,14 +10,26 @@ exports = module.exports = {
     });
     next();
   },
-  readState: ({ StateMarshal }) => async (req, res, next) => {
+  readState: ({ StateMarshal, PlayerCharacter, World }) => async (req, res, next) => {
     res.locals.state = {};
     let keys = Object.keys(req.cookies);
     let values = await Promise.all(keys.map(key => StateMarshal.decode(req.cookies[key])));
+    // this is a little leaky (compared to writeState), these methods probably belong in StateMarshal
+    // they definitely belong in the app itself and not this adapter
+    const types = {
+      character: PlayerCharacter,
+      world: World
+    };
 
     for(let i = 0; i < keys.length; i++)
-      res.locals.state[keys[i]] = values[i];
+      res.locals.state[keys[i]] = types[keys[i]] ?
+        types[keys[i]].fromJSON(values[i]) :
+        values[i];
 
+    let { world, character } = res.locals.state;
+    if(character && world) {
+      character.room = world.roomAt(character.room.location);
+    }
     return next();
   },
 
