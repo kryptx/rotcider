@@ -3,15 +3,10 @@
 const Base64url = require('base64url');
 const Zlib = require('zlib');
 const Promisify = require('util').promisify;
-const Log = require('./logger');
 
 const EncodingVersion = 0;
 const prependVersion = str => EncodingVersion + '/' + str;
 const serialize = obj => obj.toJSON ? obj.toJSON() : obj;
-const print = obj => {
-  Log.info(obj);
-  return obj;
-};
 
 const zip = Promisify(Zlib.deflate);
 const unzip = Promisify(Zlib.unzip);
@@ -37,8 +32,7 @@ exports = module.exports = {
       return Promise.resolve(value)
         .then(Base64url.toBuffer)
         .then(unzip)
-        .then(JSON.parse)
-        .then(print);
+        .then(JSON.parse);
     }
   }
 };
