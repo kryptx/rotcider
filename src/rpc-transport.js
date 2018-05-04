@@ -14,16 +14,26 @@ class RpcTransport {
     return this.serializer.deserialize(thing);
   }
 
-  serialize(thing) {
+  getSerializer(id) {
     if(!this.serializer) throw new Error('Missing serializer');
-    return this.serializer.serialize(thing);
+    return (thing) => this.serializer.serialize(thing, id);
   }
 
-  RpcStuff(procedureOptions) {
-    return Promise.resolve(new ProcedureCall(procedureOptions))
-      .then(call => call.execute())
-      .then(this.serialize)
-      .catch(this.serialize);
+  RpcStuff(req) {
+    const do_procedure = async options => {
+      let proc = new ProcedureCall(options);
+      return await proc.execute()
+        .then(this.serialize(proc.id))
+        .catch(this.serialize(proc.id));
+    };
+
+    let call = this.deserialize(req.payload);
+
+    if(Array.isArray(call)) {
+      return Promise.all(call.map(do_procedure));
+    } else {
+      return do_procedure(call);
+    }
   }
 }
 

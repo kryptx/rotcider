@@ -4,20 +4,21 @@ const Http = require('http');
 const RpcTransport = require('./rpc-transport');
 
 class HttpTransport extends RpcTransport {
-  constructor(deps) {
+  constructor(options, deps) {
     super();
     this.server = Http.createServer(async (req, res) =>
-      this.unwrap(req, deps.Serializers)
-        .then(this.RpcStuff)
+      this.setSerializer(req, deps.Serializers)
+        .then(() => this.RpcStuff(req))
         .then(res.end)
     );
 
+    this.port = options.port || 3000;
     this.log = deps.Log;
   }
 
   async start() {
-    this.server.listen(3000);
-    this.log.info('HTTP Listener listening on port 3000');
+    this.server.listen(this.port);
+    this.log.info(`HTTP Listener listening on port ${this.port}`);
   }
 
   async stop() {
@@ -29,20 +30,11 @@ class HttpTransport extends RpcTransport {
     return Promise.all(keys.map(key => StateMarshal.decode(req.cookies[key])));
   }
 
-  async unwrap(req, Serializers) {
+  async setSerializer(req, Serializers) {
     this.serializer = {
       'application/json': Serializers.JsonRpc,
       'application/json-rpc': Serializers.JsonRpc
     }[req.headers['content-type']];
-
-    let call = this.deserialize(req.payload);
-
-    return Promise.all({
-      state: this.loadState(req),
-      method: call.method,
-      params: call.params,
-      id: call.id
-    });
   }
 
 }

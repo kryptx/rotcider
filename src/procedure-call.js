@@ -24,7 +24,7 @@ class ProcedureCall {
     this.id = result.value.id;
   }
 
-  execute(deps) {
+  async execute(deps) {
     return Methods[this.method].handle(this.params, deps, this.state);
   }
 }
