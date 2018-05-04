@@ -1,18 +1,14 @@
 'use strict';
 
 const Http = require('http');
-const Transport = require('./transport');
-const ProcedureCall = require('./procedure-call');
+const RpcTransport = require('./rpc-transport');
 
-class HttpTransport extends Transport {
+class HttpTransport extends RpcTransport {
   constructor(deps) {
     super();
     this.server = Http.createServer(async (req, res) =>
       this.unwrap(req, deps.Serializers)
-        .then(new ProcedureCall)
-        .then(this.process)
-        .then(this.wrap)
-        .catch(e => e)
+        .then(this.RpcStuff)
         .then(res.end)
     );
 
@@ -34,12 +30,12 @@ class HttpTransport extends Transport {
   }
 
   async unwrap(req, Serializers) {
-    let serializer = {
+    this.serializer = {
       'application/json': Serializers.JsonRpc,
       'application/json-rpc': Serializers.JsonRpc
     }[req.headers['content-type']];
 
-    let call = serializer.deserialize(req.payload);
+    let call = this.deserialize(req.payload);
 
     return Promise.all({
       state: this.loadState(req),
@@ -49,9 +45,6 @@ class HttpTransport extends Transport {
     });
   }
 
-  async process(call) {
-
-  }
 }
 
 module.exports = HttpTransport;
