@@ -29,11 +29,12 @@ exports = module.exports = {
       thing.map(envelop).filter(i => i !== null) :
       envelop(thing);
   },
+
   /**
    * A Serializer's deserialize method should return options for a ProcedureCall.
    */
-  deserialize: str => {
-    let message = JSON.parse(str);
+  deserialize: req => {
+    let message = JSON.parse(req.payload); // ???
     let result = Joi.validate(message, [ schema , Joi.array().items(schema) ]);
     if(result.error) throw result.error;
     return result.value;

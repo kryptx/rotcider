@@ -1,7 +1,7 @@
 'use strict';
 
 const Joi = require('joi');
-const Methods = require('./methods');
+const Methods = require('../methods');
 
 // when things fail, the outcome will be different **per serializer**
 const schema = Joi.object().keys({
@@ -18,14 +18,13 @@ class ProcedureCall {
       throw result.error;
     }
 
-    this.state = result.value.state;
     this.method = result.value.method;
     this.params = result.value.params;
     this.id = result.value.id;
   }
 
-  async execute(deps) {
-    return Methods[this.method].handle(this.params, deps, this.state);
+  async execute(deps, state) {
+    return Methods[this.method].handle(this.params, deps, state);
   }
 }
 
