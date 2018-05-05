@@ -38,18 +38,10 @@ exports = module.exports = {
       envelop(thing);
   },
 
-  deserialize: req => new Promise((resolve, reject) => {
-    let requestBody = '';
-
-    req.on('data', function(data) {
-      requestBody += data;
-    });
-
-    req.on('end', function() {
-      let message = JSON.parse(requestBody);
-      let result = Joi.validate(message, [ schema , Joi.array().items(schema) ]);
-      if(result.error) return reject(result.error);
-      resolve(result.value);
-    });
-  })
+  deserialize: requestBody => {
+    let message = JSON.parse(requestBody);
+    let result = Joi.validate(message, [ schema , Joi.array().items(schema) ]);
+    if(result.error) throw result.error;
+    return result.value;
+  }
 };

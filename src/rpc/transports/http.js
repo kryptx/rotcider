@@ -15,12 +15,18 @@ class HttpTransport {
     }
 
     this.server = Http.createServer(async (req, res) => {
+      let getBody = async req => new Promise(resolve => {
+        let body = '';
+        req.on('data', data => body += data);
+        req.on('end', () => resolve(body));
+      });
+
       let serializer = this.getSerializer(req.headers['content-type']);
       let result;
 
       try {
         let args = await Promise.all([
-          serializer.deserialize(req),
+          getBody(req).then(serializer.deserialize),
           readState(req.headers),
         ]);
 
