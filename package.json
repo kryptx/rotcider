@@ -30,7 +30,6 @@
   "homepage": "https://github.com/kryptx/ripcord#readme",
   "dependencies": {
     "base64url": "^2.0.0",
-    "bluebird": "^3.5.1",
     "bunyan": "^1.8.12",
     "cookie": "^0.3.1",
     "joi": "^13.0.2"
