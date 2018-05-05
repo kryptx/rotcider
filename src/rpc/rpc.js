@@ -3,16 +3,20 @@
 const ProcedureCall = require('./procedure-call');
 
 class Rpc {
-
-  constructor({ methods }) {
+  constructor({ methods, deps }) {
     this.methods = methods;
+    this.deps = deps;
   }
 
-  async RpcStuff(payload, deps, state) {
+  listen(transports) {
+    transports.forEach(transport => transport.listen(this.deps));
+  }
+
+  async RpcStuff(payload, state) {
     const do_procedure = async input => {
       let options = Object.assign(input, { method: this.methods[input.method] });
       let proc = new ProcedureCall(options);
-      return proc.execute(deps, state);
+      return proc.execute(this.deps, state);
     };
 
     if(Array.isArray(payload)) {

@@ -1,35 +1,50 @@
 'use strict';
 
 const Http = require('http');
-const Rpc = require('../rpc');
+const Cookie = require('cookie');
 
-class RpcOverHttp {
-  constructor({ serializers, methods, deps, port }) {
+class HttpTransport {
+  constructor({ rpc, port, serializers, readState }) {
+    this.rpc = rpc;
     this.serializers = serializers;
-    this.rpc = new Rpc(methods);
+
+    if(!readState) {
+      readState = async headers => {
+        return Cookie.parse(headers.cookie);
+      };
+    }
 
     this.server = Http.createServer(async (req, res) => {
-      let serializer = this.getSerializer(req);
-      let payload = serializer.deserialize(req);
+      let serializer = this.getSerializer(req.headers['content-type']);
       let result;
 
       try {
-        let state = await this.loadState(req, deps);
-        result = await this.rpc.RpcStuff(payload, deps, state);
+        let args = await Promise.all([
+          serializer.deserialize(req),
+          readState(req.headers),
+        ]);
+
+        result = await this.rpc.RpcStuff(...args);
       } catch (err) {
         result = err;
       }
 
-      res.end(serializer.serialize(result));
+      let response = serializer.serialize(result);
+      if(response) {
+        res.writeHead(200, { 'Content-type': serializer.ContentType });
+        res.write(response);
+      } else {
+        res.writeHead(204);
+      }
+      res.end();
     });
 
     this.port = port || 3000;
-    this.log = deps.Log;
   }
 
-  async listen() {
+  async listen({ Log }) {
     this.server.listen(this.port);
-    this.log.info(`HTTP Listener listening on port ${this.port}`);
+    Log.info(`HTTP Listener listening on port ${this.port}`);
   }
 
   async close() {
@@ -41,17 +56,10 @@ class RpcOverHttp {
     return Promise.all(keys.map(key => StateMarshal.decode(req.cookies[key])));
   }
 
-  getSerializer() {
-    // just for now
-    return this.serializers.JsonRpc;
-
-    // later, a safe version of this
-    // return {
-    //   'application/json': Serializers.JsonRpc,
-    //   'application/json-rpc': Serializers.JsonRpc
-    // }[req.headers['content-type']];
+  getSerializer(type) {
+    return this.serializers[type] || this.serializers.JsonRpc2;
   }
 
 }
 
-module.exports = RpcOverHttp;
+module.exports = HttpTransport;

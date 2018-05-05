@@ -9,20 +9,28 @@ const schema = Joi.object().keys({
 });
 
 exports = module.exports = {
+  Accept: [ 'application/json-rpc', 'application/json' ],
+  ContentType: 'application/json-rpc',
   serialize: thing => {
     let envelop = result => {
       let response = { jsonrpc: '2.0', id: result.id };
 
       if(result instanceof Error) {
-        response.error = result;
+        response.error = {
+          code: -32700,
+          message: result.message,
+          stack: result.stack
+        };
         response.result = null;
       } else if (result.id) {
-        response.result = result;
+        response.result = result.result;
         response.error = null;
       } else {
         // whatever, I didn't want to respond anyway
         return null;
       }
+
+      return JSON.stringify(response);
     };
 
     return Array.isArray(thing) ?
@@ -30,10 +38,18 @@ exports = module.exports = {
       envelop(thing);
   },
 
-  deserialize: req => {
-    let message = JSON.parse(req.payload); // ???
-    let result = Joi.validate(message, [ schema , Joi.array().items(schema) ]);
-    if(result.error) throw result.error;
-    return result.value;
-  }
+  deserialize: req => new Promise((resolve, reject) => {
+    let requestBody = '';
+
+    req.on('data', function(data) {
+      requestBody += data;
+    });
+
+    req.on('end', function() {
+      let message = JSON.parse(requestBody);
+      let result = Joi.validate(message, [ schema , Joi.array().items(schema) ]);
+      if(result.error) return reject(result.error);
+      resolve(result.value);
+    });
+  })
 };

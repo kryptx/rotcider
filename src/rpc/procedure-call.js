@@ -7,8 +7,8 @@ const schema = Joi.object().keys({
   method: Joi.object().keys({
     handle: Joi.func().arity(3),
     schema: Joi.object().schema(),
-  }).options({ allowUnknown: true }),
-  params: Joi.array().required(),
+  }).required().options({ allowUnknown: true }),
+  params: Joi.any(),
   id: Joi.number(),
 });
 
@@ -25,7 +25,9 @@ class ProcedureCall {
   }
 
   async execute(deps, state) {
-    return this.method.handle(this.params, deps, state);
+    return this.method.handle(this.params, deps, state)
+      .then(result => this.result = result)
+      .then(() => this);
   }
 }
 
