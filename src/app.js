@@ -1,25 +1,21 @@
 'use strict';
 
-const Express = require('express');
-const BodyParser = require('body-parser');
-const CookieParser = require('cookie-parser');
-const JsonRpc = require('./json-rpc');
-const RpcOverHttp = require('./rpc-over-http');
-
-const app = Express();
 const deps = require('./ripcord');
-const Log = deps.Log;
+const methods = require('./methods');
+const transports = require('./rpc/transports');
+const serializers = require('./rpc/serializers');
+const Rpc = require('./rpc/rpc');
 
-app.use(CookieParser('secret!'));
-app.post('/json-rpc', [
-  BodyParser.json(),
-  RpcOverHttp.readState(deps),
-  JsonRpc.express(deps),
-  RpcOverHttp.writeState(deps),
-  RpcOverHttp.respond,
-  RpcOverHttp.handleError,
-  RpcOverHttp.logRequest(deps),
+let app = new Rpc({ methods, deps });
+app.listen([
+  new transports.HttpTransport({
+    rpc: app,
+    port: 3000,
+    serializers: {
+      'application/json': serializers.JsonRpc2,
+      'application/json-rpc': serializers.JsonRpc2,
+    }
+  })
 ]);
 
-Log.info('Listening on port 3000');
-module.exports = app.listen(3000);
+module.exports = app;
