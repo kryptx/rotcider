@@ -2,12 +2,15 @@
 
 const ProcedureCall = require('./procedure-call');
 
-class RpcTransport {
-  async listen() { throw new Error('Not implemented!'); }
-  async close() { throw new Error('Not implemented!'); }
+class Rpc {
 
-  static async RpcStuff(payload, deps, state) {
-    const do_procedure = async options => {
+  constructor({ methods }) {
+    this.methods = methods;
+  }
+
+  async RpcStuff(payload, deps, state) {
+    const do_procedure = async input => {
+      let options = Object.assign(input, { method: this.methods[input.method] });
       let proc = new ProcedureCall(options);
       return proc.execute(deps, state);
     };
@@ -20,4 +23,4 @@ class RpcTransport {
   }
 }
 
-module.exports = RpcTransport;
+module.exports = Rpc;

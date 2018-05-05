@@ -2,19 +2,20 @@
 
 const Http = require('http');
 const Rpc = require('../rpc');
-const Serializers = require('../serializers');
 
-class RpcOverHttp extends Rpc {
-  constructor(options, deps) {
-    super();
+class RpcOverHttp {
+  constructor({ serializers, methods, deps, port }) {
+    this.serializers = serializers;
+    this.rpc = new Rpc(methods);
+
     this.server = Http.createServer(async (req, res) => {
-      let serializer = this.getSerializer(req, Serializers);
+      let serializer = this.getSerializer(req);
       let payload = serializer.deserialize(req);
       let result;
 
       try {
         let state = await this.loadState(req, deps);
-        result = await Rpc.RpcStuff(payload, deps, state);
+        result = await this.rpc.RpcStuff(payload, deps, state);
       } catch (err) {
         result = err;
       }
@@ -22,7 +23,7 @@ class RpcOverHttp extends Rpc {
       res.end(serializer.serialize(result));
     });
 
-    this.port = options.port || 3000;
+    this.port = port || 3000;
     this.log = deps.Log;
   }
 
@@ -40,9 +41,9 @@ class RpcOverHttp extends Rpc {
     return Promise.all(keys.map(key => StateMarshal.decode(req.cookies[key])));
   }
 
-  getSerializer(req, Serializers) {
+  getSerializer() {
     // just for now
-    return Serializers.JsonRpc;
+    return this.serializers.JsonRpc;
 
     // later, a safe version of this
     // return {

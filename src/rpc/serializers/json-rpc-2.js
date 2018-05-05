@@ -20,7 +20,7 @@ exports = module.exports = {
         response.result = result;
         response.error = null;
       } else {
-        // fine, whatever, I didn't want to respond anyway
+        // whatever, I didn't want to respond anyway
         return null;
       }
     };
@@ -30,9 +30,6 @@ exports = module.exports = {
       envelop(thing);
   },
 
-  /**
-   * A Serializer's deserialize method should return options for a ProcedureCall.
-   */
   deserialize: req => {
     let message = JSON.parse(req.payload); // ???
     let result = Joi.validate(message, [ schema , Joi.array().items(schema) ]);

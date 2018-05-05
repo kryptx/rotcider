@@ -1,7 +1,7 @@
 /*eslint-env mocha */
 'use strict';
 
-const App = require('./app');
+const App = require('./express');
 const Request = require('supertest');
 const Assert = require('chai').assert;
 
