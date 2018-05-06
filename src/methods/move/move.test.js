@@ -4,7 +4,7 @@
 const Assert = require('chai').assert;
 const move = require('./index');
 const deps = require('../../ripcord');
-const World = deps.World;
+const World = deps.Models.world;
 
 // let rooms = [];
 // for(let i = 0; i < 5; i++) {
