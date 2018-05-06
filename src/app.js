@@ -18,8 +18,14 @@ let http = new transports.HttpTransport({
     'application/json': serializers.JsonRpc2,
     'application/json-rpc': serializers.JsonRpc2,
   },
-  readState: async headers =>
-    deps.StateMarshal.unmarshal(await readState(headers)),
+  readState: async headers => {
+    let state = await readState(headers);
+    state = await deps.StateMarshal.unmarshal(state);
+    if(state.character && state.world) {
+      state.character.room = state.world.roomAt(state.character.room.location);
+    }
+    return state;
+  },
 
   writeState: async (state, res) =>
     writeState(await deps.StateMarshal.marshal(state), res)

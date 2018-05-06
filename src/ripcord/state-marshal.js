@@ -33,6 +33,8 @@ exports = module.exports = {
   },
 
   // I'll admit this isn't the easiest thing in the world to read
+  // input is like { 'world': 'a4fe588acb2-encoded-data' }
+  // output is like { 'world': World { ... instance data ... } }
   unmarshal: async strings => {
     let keys = Object.keys(strings);
     let values = await Promise.all(keys.map(name => exports.decode(strings[name])));
