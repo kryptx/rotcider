@@ -4,40 +4,51 @@ const Http = require('http');
 const Cookie = require('cookie');
 
 class HttpTransport {
-  constructor({ rpc, port, serializers, readState }) {
+
+  static async readState(headers) {
+    return Cookie.parse(headers.cookie || '');
+  }
+
+  static async writeState(state, res) {
+    let cookies = [];
+    let keys = Object.keys(state);
+    for(let key of keys) {
+      cookies.push(Cookie.serialize(key, state[key]));
+    }
+    res.setHeader('Set-Cookie', cookies);
+  }
+
+  constructor({ rpc, port, serializers, readState, writeState }) {
     this.rpc = rpc;
     this.serializers = serializers;
 
-    if(!readState) {
-      readState = async headers => {
-        return Cookie.parse(headers.cookie);
-      };
-    }
+    readState = readState || HttpTransport.readState;
+    writeState = writeState || HttpTransport.writeState;
 
     this.server = Http.createServer(async (req, res) => {
-      let getBody = async req => new Promise(resolve => {
-        let body = '';
-        req.on('data', data => body += data);
-        req.on('end', () => resolve(body));
-      });
-
       let serializer = this.getSerializer(req.headers['content-type']);
-      let result;
+      let code = 200;
+      let result, state;
 
       try {
         let args = await Promise.all([
-          getBody(req).then(serializer.deserialize),
-          readState(req.headers),
+          this.getBody(req).then(serializer.deserialize),
+          state = readState(req.headers)
         ]);
-
         result = await this.rpc.RpcStuff(...args);
       } catch (err) {
+        // I believe RPC over HTTP should always use 500,
+        // even when the error is better described by another code
+        // the client should not be able to infer anything from the transport
+        code = 500;
         result = err;
       }
 
+      state = await state;
+      await writeState(state, res);
       let response = serializer.serialize(result);
       if(response) {
-        res.writeHead(200, { 'Content-type': serializer.ContentType });
+        res.writeHead(code, { 'Content-type': serializer.ContentType });
         res.write(response);
       } else {
         res.writeHead(204);
@@ -46,6 +57,14 @@ class HttpTransport {
     });
 
     this.port = port || 3000;
+  }
+
+  async getBody(req) {
+    return new Promise(resolve => {
+      let body = '';
+      req.on('data', data => body += data);
+      req.on('end', () => resolve(body));
+    });
   }
 
   async listen({ Log }) {
@@ -57,15 +76,9 @@ class HttpTransport {
     this.server.close();
   }
 
-  async loadState(req, { StateMarshal }) {
-    let keys = Object.keys(req.cookies);
-    return Promise.all(keys.map(key => StateMarshal.decode(req.cookies[key])));
-  }
-
   getSerializer(type) {
-    return this.serializers[type] || this.serializers.JsonRpc2;
+    return this.serializers[type] || this.serializers['application/json'];
   }
-
 }
 
 module.exports = HttpTransport;

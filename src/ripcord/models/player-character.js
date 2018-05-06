@@ -1,5 +1,7 @@
 'use strict';
 
+const Room = require('./room');
+
 exports = module.exports = class PlayerCharacter {
   constructor(input = {}) {
     Object.assign(this, {
@@ -14,6 +16,8 @@ exports = module.exports = class PlayerCharacter {
         wisdom: 5,
       }
     }, input);
+
+    this.room = this.room && new Room(this.room);
   }
 
   get equipped() {

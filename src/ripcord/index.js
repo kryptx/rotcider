@@ -3,17 +3,13 @@
 const Directions = require('./directions');
 const ItemRepository = require('./item-repository');
 const Log = require('./logger');
-const PlayerCharacter = require('./player-character');
-const Room = require('./room');
 const StateMarshal = require('./state-marshal');
-const World = require('./world');
+const Models = require('./models');
 
 module.exports = {
   Directions,
   ItemRepository,
   Log,
-  PlayerCharacter,
-  Room,
+  Models,
   StateMarshal,
-  World
 };
