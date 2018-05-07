@@ -18,12 +18,12 @@ class HttpTransport {
     res.setHeader('Set-Cookie', cookies);
   }
 
-  constructor({ rpc, port, serializers, readState, writeState }) {
+  constructor({ rpc, serializers, readState, writeState }) {
     this.rpc = rpc;
     this.serializers = serializers;
 
-    readState = readState || HttpTransport.readState;
-    writeState = writeState || HttpTransport.writeState;
+    readState = readState || this.readState;
+    writeState = writeState || this.writeState;
 
     this.server = Http.createServer(async (req, res) => {
       let serializer = this.getSerializer(req.headers['content-type']);
@@ -55,8 +55,6 @@ class HttpTransport {
       }
       res.end();
     });
-
-    this.port = port || 3000;
   }
 
   async getBody(req) {
@@ -67,13 +65,13 @@ class HttpTransport {
     });
   }
 
-  async listen({ Log }) {
-    this.server.listen(this.port);
-    Log.info(`HTTP Listener listening on port ${this.port}`);
+  async listen(port) {
+    return this.server.listen(port);
   }
 
   async close() {
     this.server.close();
+    return this.server;
   }
 
   getSerializer(type) {

@@ -13,11 +13,15 @@ const zip = Promisify(Zlib.deflate);
 const unzip = Promisify(Zlib.unzip);
 
 exports = module.exports = {
-  marshal: async objects => {
+  marshal: async (objects, encode = exports.encode) => {
     let strings = {};
     let typeNames = Object.keys(objects);
     for(let typeName of typeNames) {
-      strings[typeName] = await exports.encode(objects[typeName].toJSON());
+      if(objects[typeName].toJSON) {
+        strings[typeName] = await encode(objects[typeName].toJSON());
+      } else {
+        strings[typeName] = await encode(objects[typeName]);
+      }
     }
     return strings;
   },
@@ -32,19 +36,19 @@ exports = module.exports = {
     }
   },
 
-  // I'll admit this isn't the easiest thing in the world to read
-  // input is like { 'world': 'a4fe588acb2-encoded-data' }
-  // output is like { 'world': World { ... instance data ... } }
-  unmarshal: async strings => {
+  // input is like  { world: 'a4fe588acb2-encoded-data-9db1c3' }
+  // output is like { world: World { ... instance data ... } }
+  unmarshal: async (strings, decode = exports.decode) => {
     let keys = Object.keys(strings);
-    let values = await Promise.all(keys.map(name => exports.decode(strings[name])));
-    return keys
-      .map(name => Models[name])
-      .map((Type, i) => Type.fromJSON(values[i]))
-      .reduce((prev, curr, i) => {
-        prev[keys[i]] = curr;
-        return prev;
-      }, {});
+    let values = await Promise.all(keys.map(name => decode(strings[name])));
+    keys.forEach((name, i) => {
+      if(Models[name]) {
+        strings[name] = Models[name].fromJSON(values[i]);
+      } else {
+        strings[name] = values[i];
+      }
+    });
+    return strings;
   },
 
   decode: async rawStr => {

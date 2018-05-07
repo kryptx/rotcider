@@ -12,6 +12,20 @@ const endec = async orig => {
 };
 
 describe('State Marshal', () => {
+  it('should unmarshal a whole state object containing multiple encoded objects', async () => {
+    let decode = str => str.toUpperCase();
+    let result = await StateMarshal.unmarshal({ foo: 'foo', bar: 'bar' }, decode);
+    Assert.equal(result.foo, 'FOO');
+    Assert.equal(result.bar, 'BAR');
+  });
+
+  it('should marshal state into a state object containing multiple encoded objects', async () => {
+    let encode = obj => { obj.encoded = true; return obj; };
+    let result = await StateMarshal.marshal({ foo: { name: 'foo' }, bar: { name: 'bar' } }, encode);
+    Assert.isTrue(result.foo.encoded);
+    Assert.isTrue(result.bar.encoded);
+  });
+
   it('should encode and decode a simple object', async () => {
     return endec({ foo: 'bar', number: 5, boolean: false, missing: null });
   });

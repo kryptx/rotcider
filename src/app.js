@@ -9,11 +9,9 @@ const Rpc = require('./rpc/rpc');
 const readState = transports.HttpTransport.readState;
 const writeState = transports.HttpTransport.writeState;
 
-let app = new Rpc({ methods, deps });
-
+let rpc = new Rpc({ methods, deps });
 let http = new transports.HttpTransport({
-  rpc: app,
-  port: 3000,
+  rpc,
   serializers: {
     'application/json': serializers.JsonRpc2,
     'application/json-rpc': serializers.JsonRpc2,
@@ -31,6 +29,8 @@ let http = new transports.HttpTransport({
     writeState(await deps.StateMarshal.marshal(state), res)
 });
 
-http.listen(deps);
+http.listen(3000).then(() => deps.Log.info('Listening on port 3000.'));
 
-module.exports = app;
+module.exports = {
+  rpc, http
+};
