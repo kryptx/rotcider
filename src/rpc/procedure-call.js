@@ -5,7 +5,7 @@ const Joi = require('joi');
 const schema = Joi.object().keys({
   state: Joi.object().default({}),
   method: Joi.object().keys({
-    handle: Joi.func().arity(3),
+    handle: Joi.func(),
     schema: Joi.object().schema(),
   }).required().options({ allowUnknown: true }),
   params: Joi.any(),
