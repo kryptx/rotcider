@@ -9,7 +9,7 @@ const schema = Joi.object().keys({
     schema: Joi.object().schema(),
   }).required().options({ allowUnknown: true }),
   params: Joi.any(),
-  id: Joi.number(),
+  id: Joi.alternatives().try(Joi.number(), Joi.string()).allow(null).default(null),
 });
 
 class ProcedureCall {

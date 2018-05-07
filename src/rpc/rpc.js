@@ -8,10 +8,6 @@ class Rpc {
     this.deps = deps;
   }
 
-  listen(transports) {
-    transports.forEach(transport => transport.listen(this.deps));
-  }
-
   async RpcStuff(payload, state) {
     const do_procedure = async input => {
       let options = Object.assign(input, { method: this.methods[input.method] });
