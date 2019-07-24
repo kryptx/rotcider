@@ -41,7 +41,7 @@ exports = module.exports = class World {
 
     let current = this.start;
     let sIndex = 0;
-    // for(let sIndex = 0; sIndex < stages.length; sIndex++) {
+
     let stage = stages[sIndex];
     for(let i = 0; i < stage.maze.branch_times; i ++) {
       let branches = 1 + intInRange(stage.maze.branch_count);
@@ -51,12 +51,8 @@ exports = module.exports = class World {
       }
       current = lastTip;
     }
-    // final_obstacle: {
-    //   type: 'door',
-    //   key: 4                   // held by the bandit
-    // }
+
     current.stage = 1;
-    // }
 
     // stage_loot: [ 0, 1, 2, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 ],
     // stage_enemies: [ 0, 0, 0, 0, 0, 1 ],

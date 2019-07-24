@@ -2,19 +2,19 @@
 
 const Joi = require('joi');
 
-const schema = Joi.object().keys({
+const getSchema = (paramsSchema = Joi.any()) => Joi.object().keys({
   state: Joi.object().default({}),
   method: Joi.object().keys({
     handle: Joi.func(),
     schema: Joi.object().schema(),
   }).required().options({ allowUnknown: true }),
-  params: Joi.any(),
+  params: paramsSchema,
   id: Joi.alternatives().try(Joi.number(), Joi.string()).allow(null).default(null),
 });
 
 class ProcedureCall {
   constructor(options) {
-    let result = Joi.validate(options, schema);
+    let result = Joi.validate(options, getSchema(options.method.schema));
     if(result.error) {
       throw result.error;
     }
