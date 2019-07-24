@@ -1,4 +1,4 @@
-FROM node:8-alpine AS base
+FROM node:10 AS base
 COPY package.json yarn.lock /
 RUN yarn
 

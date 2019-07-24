@@ -16,7 +16,7 @@ The API meets the [JSON-RPC 2.0 Specification](http://www.jsonrpc.org/specificat
 There are a few ways. This one's pretty good and only requires docker.
 1. Clone the repo.
 10. Inside the folder, `docker build -t adventure .`
-20. `docker run -d adventure -p 3000:3000`
+20. `docker run -d -p 3000:3000 adventure`
 
 If you're going to be mucking about in the source anyway, there are also launch configurations present for Visual Studio Code and, of course, you can always just `npm start`.
 
