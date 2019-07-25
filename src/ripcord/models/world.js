@@ -32,7 +32,7 @@ exports = module.exports = class World {
     return tip;
   }
 
-  async build(stages) {
+  async build(stages, items, enemies) {
     // maze: {
     //   branch_count: [ 1, 2 ],  // number of branches other than the main. [ min, max ]. 5 is a lot. Can be 0.
     //   branch_length: [ 3, 5 ], // number of rooms per branch. [ min, max ]. Kinda up to you.
@@ -54,8 +54,22 @@ exports = module.exports = class World {
 
     current.stage = 1;
 
+    // stage_enemies: [ 0, 0, 0, 0, 0, 1 ]
     // stage_loot: [ 0, 1, 2, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 ],
-    // stage_enemies: [ 0, 0, 0, 0, 0, 1 ],
+    this._populate({
+      items: { loadIndexes: stage.stage_loot, fromArray: items },
+      enemies: { loadIndexes: stage.stage_enemies, fromArray: enemies }
+    });
+  }
+
+  _populate({ ...args }) {
+    let keys = Object.keys(args);
+    for(let key of keys) {
+      for(let index of args[key].loadIndexes) {
+        let roomIndex = Math.floor(Math.random() * this.rooms.length);
+        this.rooms[roomIndex][key].push(Object.assign({}, args[key].fromArray[index]));
+      }
+    }
   }
 
   toJSON() {
@@ -74,7 +88,7 @@ exports = module.exports = class World {
     });
   }
 
-  populate(raw_rooms) {
+  _populateRaw(raw_rooms) {
     this.rooms = raw_rooms.map(r => Room.fromJSON(r));
     for(let r of this.rooms) {
       for(let dir of Object.keys(r.exits)) {
@@ -85,7 +99,7 @@ exports = module.exports = class World {
 
   static fromJSON(raw_rooms) {
     let world = new World(true);
-    world.populate(raw_rooms);
+    world._populateRaw(raw_rooms);
     return world;
   }
 };

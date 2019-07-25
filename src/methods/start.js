@@ -2,6 +2,8 @@
 
 const Joi = require('joi');
 const Stages = require('../../example-dungeon/stages');
+const Enemies = require('../../example-dungeon/enemies');
+const Items = require('../../example-dungeon/items');
 
 exports = module.exports = {
   schema: Joi.object().keys({
@@ -12,7 +14,7 @@ exports = module.exports = {
       return { message: 'You already have a character. To start over, pass the parameter force: true.' };
 
     state.world = new Models.world();
-    state.world.build(Stages);
+    state.world.build(Stages, Items, Enemies);
     state.character = new Models.character({ room: state.world.start });
 
     return {
