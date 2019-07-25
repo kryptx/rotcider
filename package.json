@@ -19,8 +19,7 @@
   "keywords": [
     "json-rpc",
     "adventure",
-    "game",
-    "express"
+    "game"
   ],
   "author": "Jason Burbage <kryptx@gmail.com>",
   "license": "MIT",

@@ -8,7 +8,7 @@ class Rpc {
     this.deps = deps;
   }
 
-  async RpcStuff(payload, state) {
+  async Invoke(payload, state) {
     const do_procedure = async input => {
       let options = Object.assign(input, { method: this.methods[input.method] });
       let proc = new ProcedureCall(options);

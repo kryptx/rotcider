@@ -37,10 +37,11 @@ let exampleItems = [
   },
 ];
 
-describe('Item Repository', () => {
-  describe('insert', () => {
-    beforeEach(() => ItemRepository.purge());
+describe('ItemRepository', () => {
 
+  beforeEach(() => ItemRepository.purge());
+
+  describe('.insert', () => {
     it('should reject an item with an invalid schema', () => {
       try { ItemRepository.insert({ just: 'anything' }); }
       catch(e) {
@@ -154,9 +155,13 @@ describe('Item Repository', () => {
       }
     });
   });
-  it('should be able to export all of its data', () => {
-    ItemRepository.insert(exampleItems);
-    let data = ItemRepository.export();
-    Assert.deepEqual(data, exampleItems);
+
+  describe('.export', () => {
+    it('should export all of the repository data', () => {
+      ItemRepository.insert(exampleItems);
+      let data = ItemRepository.export();
+      Assert.deepEqual(data, exampleItems);
+    });
   });
+
 });

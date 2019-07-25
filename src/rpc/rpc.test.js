@@ -35,7 +35,7 @@ describe('RPC module', () => {
 
     Assert.deepEqual(rpc.methods, rpc_options.methods);
 
-    let result = await rpc.RpcStuff(call, {});
+    let result = await rpc.Invoke(call, {});
     Assert.equal(result[0].result, 'QUACK');
     Assert.equal(result[1].result, 'QUACK');
   });

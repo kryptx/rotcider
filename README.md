@@ -6,7 +6,7 @@ A JSON-RPC API implementing a traditional style of adventure game.
 ## What is this?
 It's a side project. It's an experiment. It's also playtime and a little bit of dress rehearsal.
 
-Since RPC has fallen so far out of favor (thanks to REST), I wanted to imagine what a user-friendly, clean developed RPC-over-HTTP API might realistically look like, from the ground up.
+Since RPC has fallen so far out of favor (thanks to REST), I wanted to imagine what a user-friendly, clean developed RPC-over-HTTP API might realistically look like, free from the assumptions of an existing framework like Express.
 
 For that purpose, I've introduced an entity -- a player character -- to which the user can issue commands. Much like the classic game, Adventure.
 
@@ -35,6 +35,10 @@ POST /json-rpc
 4. Be amazed. _This step is important. Take your time._
 5. Wait for more to be implemented.
 8. Look at this page later.
+
+### Notes
+
+For now, the API stores its data in cookies. If you're playing, make sure your client sends back any cookies you receive.
 
 ### Methods
 #### `move`

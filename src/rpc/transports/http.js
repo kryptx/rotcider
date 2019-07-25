@@ -35,11 +35,11 @@ class HttpTransport {
           this.getBody(req).then(serializer.deserialize),
           state = readState(req.headers)
         ]);
-        result = await this.rpc.RpcStuff(...args);
+        result = await this.rpc.Invoke(...args);
       } catch (err) {
         // I believe RPC over HTTP should always use 500,
         // even when the error is better described by another code
-        // the client should not be able to infer anything from the transport
+        // (not all transports can explicitly encode a reason for failure)
         code = 500;
         result = err;
       }

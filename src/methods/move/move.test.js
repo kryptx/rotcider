@@ -2,25 +2,19 @@
 'use strict';
 
 const Assert = require('chai').assert;
+const Joi = require('joi');
 const move = require('./index');
 const deps = require('../../ripcord');
-const World = deps.Models.world;
-
-// let rooms = [];
-// for(let i = 0; i < 5; i++) {
-//   let room = new Room();
-//   if(i > 0) {
-//     room = rooms[i - 1].addConnection('n', new Room());
-//   }
-//   rooms.push(room);
-// }
-
-let world = new World();
+const { world: World } = deps.Models;
 
 context('move method', () => {
-  let state = { character: { room: world.start }};
+  let state, world;
   describe('.handle', () => {
-    beforeEach(() => state = { character: { room: world.start }, world });
+    beforeEach(() => {
+      world = new World();
+      world.addRoom(world.start.addConnection('n'));
+      state = { character: { room: world.start, facing: 'n' }, world };
+    });
 
     it('should require a character', () => {
       Assert.include(move.requirements, 'character');
@@ -32,10 +26,18 @@ context('move method', () => {
       Assert.deepEqual(result.room, state.world.start.toJSON());
     });
 
-    // it('should move one unit', async () => {
-    //   let result = await move.handle({ direction: 'FORward' }, null, state);
-    //   Assert.exists(result);
-    //   Assert.equal(result.room, rooms[1]);
-    // });
+    it('should move one unit', async () => {
+      let result = await move.handle({ direction: 'FORward' }, deps, state);
+      Assert.exists(result);
+      Assert.equal(result.room, state.world.rooms[1]);
+    });
+
+  });
+
+  describe('schema', () => {
+    it('should require direction parameter', () => {
+      let result = Joi.validate({}, move.schema);
+      Assert.equal('direction', result.error.details[0].context.label);
+    });
   });
 });

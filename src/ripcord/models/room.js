@@ -15,7 +15,8 @@ module.exports = class Room {
     Object.assign(this, defaults, opts);
   }
 
-  addConnection(direction, room) {
+  addConnection(direction, room = null) {
+    if(!room) room = new Room();
     room.location = Directions.move(this.location, direction);
     this.exits[direction] = room;
     room.exits[Directions.opposite(direction)] = this;

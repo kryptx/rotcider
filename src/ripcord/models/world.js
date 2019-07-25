@@ -8,7 +8,7 @@ exports = module.exports = class World {
   constructor(empty = false) {
     this.rooms = [];
     if(!empty) {
-      this.rooms.push(new Room());
+      this.addRoom(new Room());
     }
   }
 
@@ -22,6 +22,11 @@ exports = module.exports = class World {
       r.location[1] == location[1] &&
       r.location[2] == location[2]
     );
+  }
+
+  addRoom(room) {
+    this.rooms.push(room);
+    return room;
   }
 
   createBranch(tip, length) {
