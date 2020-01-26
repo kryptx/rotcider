@@ -4,7 +4,7 @@ A JSON-RPC API implementing a traditional style of adventure game.
 [![CircleCI](https://circleci.com/gh/kryptx/ripcord.svg?style=svg)](https://circleci.com/gh/kryptx/ripcord)
 
 ## What is this?
-It's a side project. It's an experiment. It's also playtime and a little bit of dress rehearsal.
+Mostly, it's an experiment.
 
 Since RPC has fallen so far out of favor (thanks to REST), I wanted to imagine what a user-friendly, clean developed RPC-over-HTTP API might realistically look like, free from the assumptions of an existing framework like Express.
 
