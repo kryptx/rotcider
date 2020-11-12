@@ -1,6 +1,6 @@
 FROM node:14 AS base
 COPY package.json yarn.lock /
-RUN yarn
+RUN yarn --frozen-lockfile
 
 FROM base AS copy
 COPY . /
