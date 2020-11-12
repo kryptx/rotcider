@@ -2,7 +2,6 @@
 'use strict';
 
 const Assert = require('chai').assert;
-const Joi = require('joi');
 const Reflect = require('./index');
 
 describe('reflect method', () => {
@@ -15,7 +14,7 @@ describe('reflect method', () => {
 
   describe('schema', () => {
     it('should not require any parameters', () => {
-      let result = Joi.validate(null, Reflect.schema);
+      let result = Reflect.schema.validate(null);
       Assert.notOk(result.error);
     });
   });

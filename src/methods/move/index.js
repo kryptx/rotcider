@@ -4,12 +4,12 @@ const Joi = require('joi');
 
 module.exports = {
   schema: Joi.object().keys({
-    direction: Joi.string().valid([
+    direction: Joi.string().valid(
       'north','south','east','west',
       'up','down','left','right',
       'n','s','e','w','u','d','l','r',
       'back','backward','forward'
-    ]).insensitive().required()
+    ).insensitive().required()
   }).required(),
   requirements: [ 'character' ],
   handle: async (args, { Directions }, state) => {

@@ -2,7 +2,6 @@
 'use strict';
 
 const Assert = require('chai').assert;
-const Joi = require('joi');
 const move = require('./index');
 const deps = require('../../ripcord');
 const { world: World } = deps.Models;
@@ -36,7 +35,7 @@ context('move method', () => {
 
   describe('schema', () => {
     it('should require direction parameter', () => {
-      let result = Joi.validate({}, move.schema);
+      let result = move.schema.validate({});
       Assert.equal('direction', result.error.details[0].context.label);
     });
   });

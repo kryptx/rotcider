@@ -1,4 +1,4 @@
-FROM node:10 AS base
+FROM node:14 AS base
 COPY package.json yarn.lock /
 RUN yarn
 

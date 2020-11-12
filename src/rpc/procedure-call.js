@@ -15,7 +15,7 @@ const getSchema = (paramsSchema = Joi.any()) =>
 
 class ProcedureCall {
   constructor(options) {
-    let result = Joi.validate(options, getSchema(options.method.schema));
+    let result = getSchema(options.method.schema).validate(options);
     if(result.error) {
       throw result.error;
     }

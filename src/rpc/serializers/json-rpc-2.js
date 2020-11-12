@@ -2,7 +2,7 @@
 
 const Joi = require('joi');
 const schema = Joi.object().keys({
-  jsonrpc: Joi.string().only('2.0').required().strip(),
+  jsonrpc: Joi.string().valid('2.0').required().strip(),
   method: Joi.string().required(),
   params: Joi.any(),
   id: Joi.alternatives().try(Joi.number(), Joi.string()).allow(null).default(null)
