@@ -40,7 +40,7 @@ exports = module.exports = {
 
   deserialize: requestBody => {
     let message = JSON.parse(requestBody);
-    let schemas = Joi.alternatives().try(schema , Joi.array().items(schema))
+    let schemas = Joi.alternatives().try(schema , Joi.array().items(schema));
     let result = schemas.validate(message);
     if(result.error) throw result.error;
     return result.value;
