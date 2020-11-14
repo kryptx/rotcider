@@ -1,7 +1,7 @@
 'use strict';
 
 const Joi = require('joi');
-const schema = Joi.object().keys({
+const schema = Joi.object({
   jsonrpc: Joi.string().valid('2.0').required().strip(),
   method: Joi.string().required(),
   params: Joi.any(),
@@ -40,7 +40,8 @@ exports = module.exports = {
 
   deserialize: requestBody => {
     let message = JSON.parse(requestBody);
-    let result = Joi.validate(message, [ schema , Joi.array().items(schema) ]);
+    let schemas = Joi.alternatives().try(schema , Joi.array().items(schema))
+    let result = schemas.validate(message);
     if(result.error) throw result.error;
     return result.value;
   }
